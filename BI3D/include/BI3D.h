@@ -3,10 +3,13 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_image.h>
+
+#include "BI3D_Scene.h"
 
 #define BI3D_EVENT_START 0
 #define BI3D_EVENT_UPDATE 1
@@ -44,6 +47,8 @@ private:
 
 	void (*StartEvent)();
 	void (*UpdateEvent)();
+
+	vector<Scene> sceneList;
 };
 
 #endif
