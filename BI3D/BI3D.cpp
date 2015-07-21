@@ -52,6 +52,14 @@ BI3D::BI3D(string title, int width, int height)
 
 BI3D::~BI3D()
 {
+	for(GLint i = 0; i < sceneList.size(); i++)
+	{
+		delete sceneList[i];
+		sceneList[i] = NULL;
+	}
+
+	sceneList.clear();
+
 	if(iconImg != NULL)
 	{
 		SDL_FreeSurface(iconImg);
@@ -114,6 +122,9 @@ bool BI3D::Start()
 		if(UpdateEvent != NULL)
 			UpdateEvent();
 
+		for(GLint i = 0; i < sceneList.size(); i++)
+			sceneList[i]->Update();
+
 		SDL_GL_SwapWindow(window);
 	}
 
@@ -125,12 +136,13 @@ void BI3D::SetEvent(void* event, int type)
 	if(event != NULL)
 	{
 		if(type == BI3D_EVENT_START)
-		{
 			StartEvent = (void(*)(void))event;
-		}
 		else if(type == BI3D_EVENT_UPDATE)
-		{
 			UpdateEvent = (void(*)(void))event;
-		}
 	}
+}
+
+void BI3D::AddScene(Scene* scene)
+{
+	sceneList.push_back(scene);
 }

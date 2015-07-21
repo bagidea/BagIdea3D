@@ -2,8 +2,29 @@
 
 BI3D* bis;
 
+Scene* scene;
+Object* ob;
+
 void Start()
 {
+	scene = new Scene();
+
+	ob = new Object();
+	ob->Load("source/model/nanosuit/nanosuit.obj");
+
+	ob->x = 0.0f;
+	ob->y = -1.75f;
+	ob->z = 0.0f;
+
+	ob->rotationY = 180.0f;
+
+	ob->scaleX = 0.2f;
+	ob->scaleY = 0.2f;
+	ob->scaleZ = 0.2f;
+
+	scene->AddChild(ob);
+
+	bis->AddScene(scene);
 }
 
 void Update()

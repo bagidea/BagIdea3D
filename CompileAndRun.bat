@@ -50,7 +50,7 @@ ECHO :::: Status ::::
 IF EXIST "bin\Game.exe" (
 	ECHO Compile Success.
 	ECHO Start Program.
-	CD DLL
+	CD ASSET
 	START /WAIT ..\bin\Game
 	CD ..
 	RMDIR /S /Q bin

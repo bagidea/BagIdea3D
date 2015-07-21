@@ -32,6 +32,7 @@ public:
 	bool Start();
 
 	void SetEvent(void* event = NULL, int type = BI3D_EVENT_START);
+	void AddScene(Scene* scene);
 private:
 	string title;
 	int width, height;
@@ -48,7 +49,7 @@ private:
 	void (*StartEvent)();
 	void (*UpdateEvent)();
 
-	vector<Scene> sceneList;
+	vector<Scene*> sceneList;
 };
 
 #endif
