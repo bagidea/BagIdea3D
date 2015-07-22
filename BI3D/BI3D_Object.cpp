@@ -40,27 +40,36 @@ void Object::Load(string path)
 	ProcessNode(scene->mRootNode, scene);
 }
 
-void Object::Update()
+void Object::Update(Camera* camera)
 {
-	glm::vec3 camPos(0.0f, 0.0f, -3.0f);
-	GLfloat camYaw = 0.0f;
-	GLfloat camPitch = 0.0f;
-
 	glm::mat4 _projection;
 	glm::mat4 _view;
 	glm::mat4 _model;
 
 	_projection = glm::perspective(45.0f, 800.0f/600.0f, 0.1f, 100.0f);
 
-	glm::vec3 camDir(cosf(camPitch) * sinf(camYaw), sinf(camPitch), cosf(camPitch) * cosf(camYaw));
-	glm::vec3 camRight(sinf(camYaw - MATH_PI/2.0f), 0.0f, cosf(camYaw - MATH_PI/2.0f));
-	glm::vec3 camUp = cross(camRight, camDir);
+	_view = camera->GetTransform();
 
-	_view = glm::lookAt(camPos, camPos + camDir, camUp);
+	if(rotationX >= 360.0f)
+		rotationX = 0.0f;
+	else if(rotationX <= -360.0f)
+		rotationX = 0.0f;
 
-	_model = glm::translate(_model, glm::vec3(0.0f, -1.75f, 0.0f));
-	_model = glm::scale(_model, glm::vec3(0.2f, 0.2f, 0.2f));
-	_model = glm::rotate(_model, 180.0f*(MATH_PI/180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	if(rotationY >= 360.0f)
+		rotationY = 0.0f;
+	else if(rotationY <= -360.0f)
+		rotationY = 0.0f;
+
+	if(rotationZ >= 360.0f)
+		rotationZ = 0.0f;
+	else if(rotationZ <= -360.0f)
+		rotationZ = 0.0f;
+
+	_model = glm::scale(_model, glm::vec3(scaleX, scaleY, scaleZ));
+	_model = glm::rotate(_model, rotationX*(MATH_PI/180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	_model = glm::rotate(_model, rotationY*(MATH_PI/180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	_model = glm::rotate(_model, rotationZ*(MATH_PI/180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	_model = glm::translate(_model, glm::vec3(x, y, z));
 
 	for(GLint i = 0; i < meshList.size(); i++)
 		meshList[i].Update(material, _projection, _view, _model);

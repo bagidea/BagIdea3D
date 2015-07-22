@@ -15,6 +15,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "BI3D_Camera.h"
 #include "BI3D_Material.h"
 #include "BI3D_Mesh.h"
 
@@ -34,7 +35,7 @@ public:
 
 	void Load(string path);
 
-	void Update();
+	void Update(Camera* camera);
 private:
 	Material* material;
 

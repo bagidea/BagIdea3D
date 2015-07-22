@@ -48,6 +48,7 @@ BI3D::BI3D(string title, int width, int height)
 
 	StartEvent = NULL;
 	UpdateEvent = NULL;
+	InputEvent = NULL;
 }
 
 BI3D::~BI3D()
@@ -91,6 +92,8 @@ bool BI3D::Start()
 
 		if(iconImg != NULL)
 			SDL_SetWindowIcon(window, iconImg);
+
+		SDL_GL_SetSwapInterval(1);
 	}
 
 	glEnable(GL_DEPTH_TEST);
@@ -103,6 +106,9 @@ bool BI3D::Start()
 	{
 		while(SDL_PollEvent(&e) != 0)
 		{
+			if(InputEvent != NULL)
+				InputEvent(e);
+
 			switch(e.type)
 			{
 			case SDL_QUIT:
@@ -139,10 +145,26 @@ void BI3D::SetEvent(void* event, int type)
 			StartEvent = (void(*)(void))event;
 		else if(type == BI3D_EVENT_UPDATE)
 			UpdateEvent = (void(*)(void))event;
+		else if(type == BI3D_EVENT_INPUT)
+			InputEvent = (void(*)(Event))event;
 	}
 }
 
 void BI3D::AddScene(Scene* scene)
 {
+	scene->SetScreen(width, height);
 	sceneList.push_back(scene);
+}
+
+void BI3D::SetMouseInWindow(int x, int y)
+{
+	SDL_WarpMouseInWindow(window, x, y);
+}
+
+Mouse BI3D::GetMousePosition()
+{
+	Mouse mouseObject;
+	SDL_GetMouseState(&mouseObject.x, &mouseObject.y);
+
+	return mouseObject;
 }
