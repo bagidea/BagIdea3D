@@ -11,14 +11,20 @@ Scene::~Scene()
 {
 	for(GLint i = 0; i < objectList.size(); i++)
 	{
-		delete objectList[i];
-		objectList[i] = NULL;
+		if(objectList[i] != NULL)
+		{
+			delete objectList[i];
+			objectList[i] = NULL;
+		}
 	}
 
 	objectList.clear();
 
-	delete mainCamera;
-	mainCamera = NULL;
+	if(mainCamera != NULL)
+	{
+		delete mainCamera;
+		mainCamera = NULL;
+	}
 }
 
 void Scene::AddChild(Object* object)

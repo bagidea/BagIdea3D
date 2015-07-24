@@ -34,16 +34,22 @@ public:
 	~Object();
 
 	void Load(string path);
+	void Clone(Object* ob);
 
 	void Update(Camera* camera);
+
+	Material* GetMaterial();
+	vector<Mesh*> GetMesh();
+	string GetDirectory();
 private:
 	Material* material;
-
-	vector<Mesh> meshList;
+	vector<Mesh*> meshList;
 	string directory;
 
+	bool clone;
+
 	void ProcessNode(aiNode* node, const aiScene* scene);
-	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 };
 

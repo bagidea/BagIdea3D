@@ -47,19 +47,34 @@ void Camera::MoveRight(GLfloat speed)
 glm::mat4 Camera::GetTransform()
 {
 	if(rotationX >= 360.0f)
-		rotationX = 0.0f;
+		rotationX = 360.0f;
 	else if(rotationX <= -360.0f)
-		rotationX = 0.0f;
+		rotationX = -360.0f;
 
 	if(rotationY >= 360.0f)
-		rotationY = 0.0f;
+		rotationY = 360.0f;
 	else if(rotationY <= -360.0f)
-		rotationY = 0.0f;
+		rotationY = -360.0f;
 
 	if(rotationZ >= 360.0f)
-		rotationZ = 0.0f;
+		rotationZ = 360.0f;
 	else if(rotationZ <= -360.0f)
-		rotationZ = 0.0f;
+		rotationZ = -360.0f;
+	
+	if(rotationX >= 180.0f)
+		rotationX = -180.0f+(rotationX-180.0f);
+	else if(rotationX <= -180.0f)
+		rotationX = 180.0f+(rotationX+180.0f);
+
+	if(rotationY >= 180.0f)
+		rotationY = -180.0f+(rotationY-180.0f);
+	else if(rotationY <= -180.0f)
+		rotationY = 180.0f+(rotationY+180.0f);
+
+	if(rotationZ >= 180.0f)
+		rotationZ = -180.0f+(rotationZ-180.0f);
+	else if(rotationZ <= -180.0f)
+		rotationZ = 180.0f+(rotationZ+180.0f);
 
 	glm::mat4 trans;
 

@@ -18,6 +18,8 @@ Color::Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 
 BI3D::BI3D(string title, int width, int height)
 {
+	srand(time(NULL));
+
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -55,8 +57,11 @@ BI3D::~BI3D()
 {
 	for(GLint i = 0; i < sceneList.size(); i++)
 	{
-		delete sceneList[i];
-		sceneList[i] = NULL;
+		if(sceneList[i] != NULL)
+		{
+			delete sceneList[i];
+			sceneList[i] = NULL;
+		}
 	}
 
 	sceneList.clear();
@@ -167,4 +172,14 @@ Mouse BI3D::GetMousePosition()
 	SDL_GetMouseState(&mouseObject.x, &mouseObject.y);
 
 	return mouseObject;
+}
+
+GLfloat BI3D::Randomf(GLfloat min, GLfloat max)
+{
+	if(min < 0.0f | max < 0.0f)
+		return 0.0f;
+
+	GLfloat ran = (((GLfloat)rand()/(GLfloat)RAND_MAX)*(min+max))-min;
+
+	return ran;
 }

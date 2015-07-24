@@ -15,13 +15,31 @@ Object::Object()
 	directory = "";
 
 	material = new Material("shader/Default.vs", "shader/Default.fs");
+
+	clone = false;
 }
 
 Object::~Object()
 {
+	for(GLint i = 0; i < meshList.size(); i++)
+	{
+		if(meshList[i] != NULL)
+		{
+			if(!clone)
+			{
+				delete meshList[i];
+				meshList[i] = NULL;
+			}
+		}
+	}
+
 	meshList.clear();
-	delete material;
-	material = NULL;
+
+	if(material != NULL)
+	{
+		delete material;
+		material = NULL;
+	}
 }
 
 void Object::Load(string path)
@@ -38,6 +56,27 @@ void Object::Load(string path)
 	directory = path.substr(0, path.find_last_of('/'));
 
 	ProcessNode(scene->mRootNode, scene);
+
+	clone = false;
+}
+
+void Object::Clone(Object* ob)
+{
+	x = ob->x;
+	y = ob->y;
+	z = ob->z;
+	rotationX = ob->rotationX;
+	rotationY = ob->rotationY;
+	rotationZ = ob->rotationZ;
+	scaleX = ob->scaleX;
+	scaleY = ob->scaleY;
+	scaleZ = ob->scaleZ;
+
+	material = ob->GetMaterial();
+	meshList = ob->GetMesh();
+	directory = ob->GetDirectory();
+
+	clone = true;
 }
 
 void Object::Update(Camera* camera)
@@ -51,29 +90,48 @@ void Object::Update(Camera* camera)
 	_view = camera->GetTransform();
 
 	if(rotationX >= 360.0f)
-		rotationX = 0.0f;
+		rotationX = 360.0f;
 	else if(rotationX <= -360.0f)
-		rotationX = 0.0f;
+		rotationX = -360.0f;
 
 	if(rotationY >= 360.0f)
-		rotationY = 0.0f;
+		rotationY = 360.0f;
 	else if(rotationY <= -360.0f)
-		rotationY = 0.0f;
+		rotationY = -360.0f;
 
 	if(rotationZ >= 360.0f)
-		rotationZ = 0.0f;
+		rotationZ = 360.0f;
 	else if(rotationZ <= -360.0f)
-		rotationZ = 0.0f;
+		rotationZ = -360.0f;
 
+	if(rotationX >= 180.0f)
+		rotationX = -180.0f+(rotationX-180.0f);
+	else if(rotationX <= -180.0f)
+		rotationX = 180.0f+(rotationX+180.0f);
+
+	if(rotationY >= 180.0f)
+		rotationY = -180.0f+(rotationY-180.0f);
+	else if(rotationY <= -180.0f)
+		rotationY = 180.0f+(rotationY+180.0f);
+
+	if(rotationZ >= 180.0f)
+		rotationZ = -180.0f+(rotationZ-180.0f);
+	else if(rotationZ <= -180.0f)
+		rotationZ = 180.0f+(rotationZ+180.0f);
+
+	_model = glm::translate(_model, glm::vec3(-x, y, z));
 	_model = glm::scale(_model, glm::vec3(scaleX, scaleY, scaleZ));
 	_model = glm::rotate(_model, rotationX*(MATH_PI/180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	_model = glm::rotate(_model, rotationY*(MATH_PI/180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	_model = glm::rotate(_model, rotationZ*(MATH_PI/180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	_model = glm::translate(_model, glm::vec3(x, y, z));
 
 	for(GLint i = 0; i < meshList.size(); i++)
-		meshList[i].Update(material, _projection, _view, _model);
+		meshList[i]->Update(material, _projection, _view, _model);
 }
+
+Material* Object::GetMaterial(){return material;}
+vector<Mesh*> Object::GetMesh(){return meshList;}
+string Object::GetDirectory(){return directory;}
 
 void Object::ProcessNode(aiNode* node, const aiScene* scene)
 {
@@ -89,7 +147,7 @@ void Object::ProcessNode(aiNode* node, const aiScene* scene)
 	}
 }
 
-Mesh Object::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+Mesh* Object::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
@@ -142,7 +200,7 @@ Mesh Object::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
 
-	return Mesh(vertices, indices, textures);
+	return new Mesh(vertices, indices, textures);
 }
 
 vector<Texture> Object::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)

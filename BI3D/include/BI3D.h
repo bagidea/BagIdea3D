@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 
 #include <GL/glew.h>
 #include <SDL.h>
@@ -47,6 +49,8 @@ public:
 	void SetMouseInWindow(int x, int y);
 
 	Mouse GetMousePosition();
+
+	GLfloat Randomf(GLfloat min, GLfloat max);
 private:
 	string title;
 	int width, height;

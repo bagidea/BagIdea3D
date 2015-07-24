@@ -25,10 +25,10 @@ void Start()
 
 	camera = new Camera(45.0f, 0.1f, 500.0f);
 
-	camera->y = 3.0f;
+	camera->y = 1.0f;
 	camera->z = -3.0f;
 
-	camera->rotationX = 30.0f;
+	camera->rotationX = 20.0f;
 
 	scene->AddCamera(camera);
 
@@ -46,6 +46,20 @@ void Start()
 	ob->scaleZ = 0.2f;
 
 	scene->AddChild(ob);
+
+	for(int i = 0; i < 200; i++)
+	{
+		Object* ob_ = new Object();
+		ob_->Clone(ob);
+
+		ob_->x = bis->Randomf(0.0f, 40.0f)-20.0f;
+		ob_->z = bis->Randomf(0.0f, 40.0f);
+
+		ob_->rotationY = bis->Randomf(0.0f, 360.0f)-180.0f;
+
+		scene->AddChild(ob_);
+	}
+
 	bis->AddScene(scene);
 
 	bis->SetMouseInWindow(400, 300);
