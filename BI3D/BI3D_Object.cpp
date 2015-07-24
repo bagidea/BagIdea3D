@@ -60,7 +60,7 @@ void Object::Load(string path)
 	clone = false;
 }
 
-void Object::Clone(Object* ob)
+void Object::LoadPrefab(Object* ob)
 {
 	x = ob->x;
 	y = ob->y;
@@ -79,15 +79,9 @@ void Object::Clone(Object* ob)
 	clone = true;
 }
 
-void Object::Update(Camera* camera)
+void Object::Update()
 {
-	glm::mat4 _projection;
-	glm::mat4 _view;
 	glm::mat4 _model;
-
-	_projection = glm::perspective(45.0f, 800.0f/600.0f, 0.1f, 100.0f);
-
-	_view = camera->GetTransform();
 
 	if(rotationX >= 360.0f)
 		rotationX = 360.0f;
@@ -125,13 +119,16 @@ void Object::Update(Camera* camera)
 	_model = glm::rotate(_model, rotationY*(MATH_PI/180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	_model = glm::rotate(_model, rotationZ*(MATH_PI/180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
+	glUniformMatrix4fv(glGetUniformLocation(material->program, "model"), 1, GL_FALSE, glm::value_ptr(_model));
+
 	for(GLint i = 0; i < meshList.size(); i++)
-		meshList[i]->Update(material, _projection, _view, _model);
+		meshList[i]->Update(material);
 }
 
 Material* Object::GetMaterial(){return material;}
 vector<Mesh*> Object::GetMesh(){return meshList;}
 string Object::GetDirectory(){return directory;}
+bool Object::GetClone(){return clone;}
 
 void Object::ProcessNode(aiNode* node, const aiScene* scene)
 {

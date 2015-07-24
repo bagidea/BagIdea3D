@@ -4,7 +4,7 @@ BI3D* bis;
 
 Scene* scene;
 Camera* camera;
-Object* ob;
+Object* model;
 
 bool upK, downK, leftK, rightK;
 bool upR, downR, leftR, rightR;
@@ -27,34 +27,37 @@ void Start()
 
 	camera->y = 1.0f;
 	camera->z = -3.0f;
-
 	camera->rotationX = 20.0f;
 
 	scene->AddCamera(camera);
 
-	ob = new Object();
+	model = new Object();
+	model->Load("source/model/nanosuit/nanosuit.obj");
+
+	model->y = -1.75f;
+	model->scaleX = 0.2f;
+	model->scaleY = 0.2f;
+	model->scaleZ = 0.2f;
+
+	scene->AddChild(model);
+
+	Object* ob = new Object();
 	ob->Load("source/model/nanosuit/nanosuit.obj");
 
-	ob->x = 0.0f;
 	ob->y = -1.75f;
-	ob->z = 0.0f;
-
-	ob->rotationY = 180.0f;
-	
 	ob->scaleX = 0.2f;
 	ob->scaleY = 0.2f;
 	ob->scaleZ = 0.2f;
 
-	scene->AddChild(ob);
+	scene->CreatePrefab(ob, "sample_model");
 
 	for(int i = 0; i < 200; i++)
 	{
 		Object* ob_ = new Object();
-		ob_->Clone(ob);
+		ob_->LoadPrefab(scene->GetPrefab("sample_model"));
 
 		ob_->x = bis->Randomf(0.0f, 40.0f)-20.0f;
 		ob_->z = bis->Randomf(0.0f, 40.0f);
-
 		ob_->rotationY = bis->Randomf(0.0f, 360.0f)-180.0f;
 
 		scene->AddChild(ob_);
@@ -97,7 +100,7 @@ void Update()
 	CameraRotate();
 	CameraMove();
 
-	ob->rotationY += 1.0f;
+	model->rotationY += 1.0f;
 }
 
 void Input(Event num)
@@ -175,6 +178,7 @@ int main(int argc, char* argv[])
 
 	bis->Start();
 
-	delete bis;
+	bis->Close();
+	
 	return 0;
 }

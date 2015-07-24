@@ -161,6 +161,23 @@ void BI3D::AddScene(Scene* scene)
 	sceneList.push_back(scene);
 }
 
+void BI3D::DeleteScene(Scene* scene)
+{
+	for(GLint i = 0; i < sceneList.size(); i++)
+	{
+		if(sceneList[i] == scene)
+		{
+			if(sceneList[i] != NULL)
+			{
+				delete sceneList[i];
+				sceneList[i] = NULL;
+			}
+
+			sceneList.erase(sceneList.begin()+i);
+		}
+	}
+}
+
 void BI3D::SetMouseInWindow(int x, int y)
 {
 	SDL_WarpMouseInWindow(window, x, y);
@@ -182,4 +199,9 @@ GLfloat BI3D::Randomf(GLfloat min, GLfloat max)
 	GLfloat ran = (((GLfloat)rand()/(GLfloat)RAND_MAX)*(min+max))-min;
 
 	return ran;
+}
+
+void BI3D::Close()
+{
+	delete this;
 }

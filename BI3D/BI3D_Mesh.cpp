@@ -9,14 +9,8 @@ Mesh::Mesh(vector<Vertex> vec, vector<GLuint> ind, vector<Texture> tex)
 	SetupMesh();
 }
 
-void Mesh::Update(Material* material, glm::mat4 _projection, glm::mat4 _view, glm::mat4 _model)
+void Mesh::Update(Material* material)
 {
-	material->Bind();
-
-	glUniformMatrix4fv(glGetUniformLocation(material->program, "projection"), 1, GL_FALSE, glm::value_ptr(_projection));
-	glUniformMatrix4fv(glGetUniformLocation(material->program, "view"), 1, GL_FALSE, glm::value_ptr(_view));
-	glUniformMatrix4fv(glGetUniformLocation(material->program, "model"), 1, GL_FALSE, glm::value_ptr(_model));
-
 	GLuint diffuseNr = 1;
 	GLuint specularNr = 1;
 

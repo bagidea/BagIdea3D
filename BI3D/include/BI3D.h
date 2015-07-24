@@ -46,11 +46,14 @@ public:
 
 	void SetEvent(void* event = NULL, int type = BI3D_EVENT_START);
 	void AddScene(Scene* scene);
+	void DeleteScene(Scene* scene);
 	void SetMouseInWindow(int x, int y);
 
 	Mouse GetMousePosition();
 
 	GLfloat Randomf(GLfloat min, GLfloat max);
+
+	void Close();
 private:
 	string title;
 	int width, height;

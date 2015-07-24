@@ -41,7 +41,7 @@ public:
 
 	Mesh(vector<Vertex> vec, vector<GLuint> ind, vector<Texture> tex);
 
-	void Update(Material* material, glm::mat4 _projection, glm::mat4 _view, glm::mat4 _model);
+	void Update(Material* material);
 private:
 	GLuint VAO, VBO, EBO;
 

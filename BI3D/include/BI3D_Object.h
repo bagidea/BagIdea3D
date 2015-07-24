@@ -34,13 +34,14 @@ public:
 	~Object();
 
 	void Load(string path);
-	void Clone(Object* ob);
+	void LoadPrefab(Object* ob);
 
-	void Update(Camera* camera);
+	void Update();
 
 	Material* GetMaterial();
 	vector<Mesh*> GetMesh();
 	string GetDirectory();
+	bool GetClone();
 private:
 	Material* material;
 	vector<Mesh*> meshList;
