@@ -36,7 +36,7 @@ public:
 	void Load(string path);
 	void LoadPrefab(Object* ob);
 
-	void Update();
+	void Update(Camera* camera);
 
 	Material* GetMaterial();
 	vector<Mesh*> GetMesh();

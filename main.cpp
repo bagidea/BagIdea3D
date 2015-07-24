@@ -29,7 +29,8 @@ void Start()
 	camera->z = -3.0f;
 	camera->rotationX = 20.0f;
 
-	scene->AddCamera(camera);
+	scene->SetCamera(camera);
+	//scene->ClearCamera();
 
 	model = new Object();
 	model->Load("source/model/nanosuit/nanosuit.obj");
@@ -40,6 +41,7 @@ void Start()
 	model->scaleZ = 0.2f;
 
 	scene->AddChild(model);
+	//scene->DeleteChild(model);
 
 	Object* ob = new Object();
 	ob->Load("source/model/nanosuit/nanosuit.obj");
@@ -50,6 +52,7 @@ void Start()
 	ob->scaleZ = 0.2f;
 
 	scene->CreatePrefab(ob, "sample_model");
+	//scene->DeletePrefab(ob, "sample_model");
 
 	for(int i = 0; i < 200; i++)
 	{
@@ -64,6 +67,7 @@ void Start()
 	}
 
 	bis->AddScene(scene);
+	//bis->DeleteScene(scene);
 
 	bis->SetMouseInWindow(400, 300);
 }
@@ -179,6 +183,6 @@ int main(int argc, char* argv[])
 	bis->Start();
 
 	bis->Close();
-	
+
 	return 0;
 }

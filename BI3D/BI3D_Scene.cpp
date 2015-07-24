@@ -139,11 +139,20 @@ Object* Scene::GetPrefab(string name)
 	return NULL;
 }
 
-void Scene::AddCamera(Camera* camera)
+void Scene::SetCamera(Camera* camera)
 {
 	GLfloat ratio = (GLfloat)screenWidth / (GLfloat)screenHeight;
 	camera->SetRatio(ratio);
 	mainCamera = camera;
+}
+
+void Scene::ClearCamera()
+{
+	if(mainCamera != NULL)
+	{
+		delete mainCamera;
+		mainCamera = NULL;
+	}
 }
 
 void Scene::Update()
@@ -152,7 +161,9 @@ void Scene::Update()
 	glm::mat4 _view;
 
 	_projection = glm::perspective(45.0f, 800.0f/600.0f, 0.1f, 100.0f);
-	_view = mainCamera->GetTransform();
+	
+	if(mainCamera != NULL)
+		_view = mainCamera->GetTransform();
 
 	for(GLint i = 0; i < materialList.size(); i++)
 	{
@@ -164,7 +175,7 @@ void Scene::Update()
 		for(GLint a = 0; a < objectList.size(); a++)
 		{
 			if(objectList[a]->GetMaterial() == materialList[i])
-				objectList[a]->Update();
+				objectList[a]->Update(mainCamera);
 		}
 	}
 }

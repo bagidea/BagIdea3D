@@ -79,7 +79,7 @@ void Object::LoadPrefab(Object* ob)
 	clone = true;
 }
 
-void Object::Update()
+void Object::Update(Camera* camera)
 {
 	glm::mat4 _model;
 
@@ -113,16 +113,19 @@ void Object::Update()
 	else if(rotationZ <= -180.0f)
 		rotationZ = 180.0f+(rotationZ+180.0f);
 
-	_model = glm::translate(_model, glm::vec3(-x, y, z));
-	_model = glm::scale(_model, glm::vec3(scaleX, scaleY, scaleZ));
-	_model = glm::rotate(_model, rotationX*(MATH_PI/180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	_model = glm::rotate(_model, rotationY*(MATH_PI/180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	_model = glm::rotate(_model, rotationZ*(MATH_PI/180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	if(camera != NULL)
+	{
+		_model = glm::translate(_model, glm::vec3(-x, y, z));
+		_model = glm::scale(_model, glm::vec3(scaleX, scaleY, scaleZ));
+		_model = glm::rotate(_model, rotationX*(MATH_PI/180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		_model = glm::rotate(_model, rotationY*(MATH_PI/180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		_model = glm::rotate(_model, rotationZ*(MATH_PI/180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	glUniformMatrix4fv(glGetUniformLocation(material->program, "model"), 1, GL_FALSE, glm::value_ptr(_model));
+		glUniformMatrix4fv(glGetUniformLocation(material->program, "model"), 1, GL_FALSE, glm::value_ptr(_model));
 
-	for(GLint i = 0; i < meshList.size(); i++)
-		meshList[i]->Update(material);
+		for(GLint i = 0; i < meshList.size(); i++)
+			meshList[i]->Update(material);
+	}
 }
 
 Material* Object::GetMaterial(){return material;}

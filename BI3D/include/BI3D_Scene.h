@@ -35,7 +35,8 @@ public:
 	void DeletePrefab(string name);
 	Object* GetPrefab(string name);
 
-	void AddCamera(Camera* camera);
+	void SetCamera(Camera* camera);
+	void ClearCamera();
 
 	void Update();
 
