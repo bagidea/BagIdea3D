@@ -102,7 +102,7 @@ void Object::LookAt(GLfloat x, GLfloat y, GLfloat z)
 	else
 		rotationY = glm::degrees(v.y);
 
-		rotationZ = glm::degrees(0.0f);
+	rotationZ = glm::degrees(0.0f);
 }
 
 void Object::Update(Camera* camera)
