@@ -1,10 +1,13 @@
 #include "BI3D.h"
 
+#include <cmath>
+
 BI3D* bis;
 
 Scene* scene;
 Camera* camera;
 Object* model;
+Object* model2;
 
 bool upK, downK, leftK, rightK;
 bool upR, downR, leftR, rightR;
@@ -25,8 +28,8 @@ void Start()
 
 	camera = new Camera(45.0f, 0.1f, 500.0f);
 
-	camera->y = 1.0f;
-	camera->z = -3.0f;
+	camera->y = 1.75f;
+	camera->z = -4.0f;
 	camera->rotationX = 20.0f;
 
 	scene->SetCamera(camera);
@@ -35,7 +38,12 @@ void Start()
 	model = new Object();
 	model->Load("source/model/nanosuit/nanosuit.obj");
 
+	model->x = 2.0f;
 	model->y = -1.75f;
+	model->z = -1.0f;
+	model->rotationY = 180.0f;
+	//model->rotationZ = 45.0f;
+	//model->rotationX = 45.0f;
 	model->scaleX = 0.2f;
 	model->scaleY = 0.2f;
 	model->scaleZ = 0.2f;
@@ -54,7 +62,7 @@ void Start()
 	scene->CreatePrefab(ob, "sample_model");
 	//scene->DeletePrefab(ob, "sample_model");
 
-	for(int i = 0; i < 200; i++)
+	for(int i = 0; i < 100; i++)
 	{
 		Object* ob_ = new Object();
 		ob_->LoadPrefab(scene->GetPrefab("sample_model"));
@@ -65,6 +73,22 @@ void Start()
 
 		scene->AddChild(ob_);
 	}
+
+	model2 = new Object();
+	model2->LoadPrefab(scene->GetPrefab("sample_model"));
+
+	model2->x = -2.0f;
+	model2->y = -1.75f;
+	model2->z = -2.0f;
+	model2->rotationY = 180.0f;
+	//model->rotationZ = 45.0f;
+	//model->rotationX = 45.0f;
+	model2->scaleX = 0.2f;
+	model2->scaleY = 0.2f;
+	model2->scaleZ = 0.2f;
+
+	scene->AddChild(model2);
+	//scene->DeleteChild(model2);
 
 	bis->AddScene(scene);
 	//bis->DeleteScene(scene);
@@ -104,7 +128,9 @@ void Update()
 	CameraRotate();
 	CameraMove();
 
-	model->rotationY += 1.0f;
+	//model->rotationY += 2.0f;
+	model->LookAt(camera->x, camera->y, camera->z);
+	model2->LookAt(camera->x, camera->y, camera->z);
 }
 
 void Input(Event num)
@@ -137,6 +163,9 @@ void Input(Event num)
 			break;
 		case KEY_D:
 			rightK = true;
+			break;
+		case KEY_SPACE:
+			camera->LookAt(0.0f, 0.0f, 0.0f);
 			break;
 		}
 		break;

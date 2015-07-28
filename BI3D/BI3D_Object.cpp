@@ -79,6 +79,32 @@ void Object::LoadPrefab(Object* ob)
 	clone = true;
 }
 
+void Object::LookAt(GLfloat x, GLfloat y, GLfloat z)
+{
+	glm::vec3 Pos(-this->x, this->y, this->z);
+	glm::vec3 Target(x, y, z);
+
+	glm::mat4 m = glm::lookAt(Pos, Target, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	glm::quat Rotate = glm::conjugate(glm::quat_cast(m));
+	glm::vec3 v = glm::eulerAngles(Rotate);
+
+	if(Pos.z > Target.z)
+		rotationX = glm::degrees(-v.x);
+	else
+		rotationX = glm::degrees(-v.x)+180.0f;
+
+	if(Pos.z > Target.z)
+		if(Pos.x > Target.x)
+			rotationY = glm::degrees(-v.y)-180.0f;
+		else
+			rotationY = glm::degrees(-v.y)+180.0f;
+	else
+		rotationY = glm::degrees(v.y);
+
+		rotationZ = glm::degrees(0.0f);
+}
+
 void Object::Update(Camera* camera)
 {
 	glm::mat4 _model;
@@ -115,11 +141,17 @@ void Object::Update(Camera* camera)
 
 	if(camera != NULL)
 	{
-		_model = glm::translate(_model, glm::vec3(-x, y, z));
-		_model = glm::scale(_model, glm::vec3(scaleX, scaleY, scaleZ));
-		_model = glm::rotate(_model, rotationX*(MATH_PI/180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		_model = glm::rotate(_model, rotationY*(MATH_PI/180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		_model = glm::rotate(_model, rotationZ*(MATH_PI/180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 position = glm::translate(glm::mat4(), glm::vec3(-x, y, z));
+
+		glm::vec3 vec();
+		//glm::quat quat(glm::vec3(glm::radians(rotationX), glm::radians(-rotationY), glm::radians(-rotationZ)));
+		//glm::mat4 rotation = glm::mat4_cast(quat);
+		glm::mat4 roX = glm::rotate(glm::mat4(), glm::radians(rotationX), glm::vec3(1.0f, 0.0f, 0.0f));
+		glm::mat4 roY = glm::rotate(glm::mat4(), glm::radians(-rotationY), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 roZ = glm::rotate(glm::mat4(), glm::radians(-rotationZ), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 rotation = roY * roX * roZ;
+		glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(scaleX, scaleY, scaleZ));
+		_model = position * rotation * scale;
 
 		glUniformMatrix4fv(glGetUniformLocation(material->program, "model"), 1, GL_FALSE, glm::value_ptr(_model));
 

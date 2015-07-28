@@ -43,7 +43,7 @@
 #define KEY_7 SDLK_7
 #define KEY_8 SDLK_8
 #define KEY_9 SDLK_9
-#define KEYy_SPACE SDLK_SPACE
+#define KEY_SPACE SDLK_SPACE
 #define KEY_ENTER SDLK_RETURN
 #define KEY_F1 SDLK_F1
 #define KEY_F2 SDLK_F2
