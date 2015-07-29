@@ -47,14 +47,12 @@ void Camera::MoveRight(GLfloat speed)
 void Camera::LookAt(GLfloat x, GLfloat y, GLfloat z)
 {
 	glm::vec3 Pos(this->x, this->y, this->z);
-	glm::vec3 Target(x, y, z);
+	glm::vec3 Target(-x, y, z);
 
 	glm::mat4 m = glm::lookAt(Pos, Target, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glm::quat Rotate = glm::conjugate(glm::quat_cast(m));
 	glm::vec3 v = glm::eulerAngles(Rotate);
-
-	rotationZ = glm::degrees(0.0f);
 
 	if(Pos.z > Target.z)
 		rotationX = glm::degrees(-v.x);

@@ -78,7 +78,7 @@ void Start()
 	model2->LoadPrefab(scene->GetPrefab("sample_model"));
 
 	model2->x = -2.0f;
-	model2->y = -1.75f;
+	model2->y = 1.75f;
 	model2->z = -2.0f;
 	model2->rotationY = 180.0f;
 	//model->rotationZ = 45.0f;
@@ -165,7 +165,7 @@ void Input(Event num)
 			rightK = true;
 			break;
 		case KEY_SPACE:
-			camera->LookAt(0.0f, 0.0f, 0.0f);
+			camera->LookAt(model2->x, model2->y, model2->z);
 			break;
 		}
 		break;
