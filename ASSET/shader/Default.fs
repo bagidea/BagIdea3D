@@ -6,7 +6,12 @@ out vec4 color;
 
 uniform sampler2D texture_diffuse1;
 
+uniform float gamma;
+
 void main()
-{    
-    color = vec4(texture(texture_diffuse1, TexCoords));
+{   
+	vec3 diffuse = texture(texture_diffuse1, TexCoords).rgb;
+	diffuse = pow(diffuse, vec3(1.0f/gamma));
+
+    color = vec4(diffuse, 1.0f);
 }

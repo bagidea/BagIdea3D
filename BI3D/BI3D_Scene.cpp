@@ -37,6 +37,8 @@ DirectionalLight::DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::
 	this->ambient = ambient;
 	this->diffuse = diffuse;
 	this->specular = specular;
+
+	this->intensity = 1.0f;
 }
 
 void DirectionalLight::SetDirection(GLfloat x, GLfloat y, GLfloat z)
@@ -62,6 +64,8 @@ PointLight::PointLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLf
 	this->ambient = ambient;
 	this->diffuse = diffuse;
 	this->specular = specular;
+
+	this->intensity = 2.5f;
 }
 
 PointLight::PointLight(GLfloat x, GLfloat y, GLfloat z)
@@ -74,9 +78,11 @@ PointLight::PointLight(GLfloat x, GLfloat y, GLfloat z)
 	this->linear = 0.09f;
 	this->quadratic = 0.032f;
 
-	this->ambient = glm::vec3(0.05f, 0.05f, 0.05f);
+	this->ambient = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
 	this->specular = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	this->intensity = 2.5f;
 }
 
 void PointLight::SetColor(Color color)
@@ -102,6 +108,8 @@ SpotLight::SpotLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLflo
 	this->ambient = ambient;
 	this->diffuse = diffuse;
 	this->specular = specular;
+
+	this->intensity = 2.5f;
 }
 
 SpotLight::SpotLight(GLfloat x, GLfloat y, GLfloat z)
@@ -123,9 +131,11 @@ SpotLight::SpotLight(GLfloat x, GLfloat y, GLfloat z)
 	this->cutOff = 12.5f;
 	this->outerCutOff = 17.5f;
 
-	this->ambient = glm::vec3(0.05f, 0.05f, 0.05f);
+	this->ambient = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
 	this->specular = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	this->intensity = 2.5f;
 }
 
 void SpotLight::SetColor(Color color)
@@ -135,11 +145,13 @@ void SpotLight::SetColor(Color color)
 
 Scene::Scene()
 {
+	gamma = 2.0f;
+
 	mainCamera = NULL;
 	screenWidth = 0.0f;
 	screenHeight = 0.0f;
 
-	directionalLight = new DirectionalLight(glm::vec3(3.0f, -1.0f, 5.0f), glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	directionalLight = new DirectionalLight(glm::vec3(3.0f, -1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	maxPointLight = 4;
 	maxSpotLight = 4;
 }
@@ -396,11 +408,13 @@ void Scene::Update()
 	{
 		materialList[i]->Bind();
 
+		glUniform1f(glGetUniformLocation(materialList[i]->program, "gamma"), gamma);
+
 		if(materialList[i]->GetType() == BI3D_SUPPORT_LIGHT)
 		{
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.direction"), directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.ambient"), directionalLight->ambient.x, directionalLight->ambient.y, directionalLight->ambient.z);
-			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.diffuse"), directionalLight->diffuse.x, directionalLight->diffuse.y, directionalLight->diffuse.z);
+			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.diffuse"), directionalLight->diffuse.x*directionalLight->intensity, directionalLight->diffuse.y*directionalLight->intensity, directionalLight->diffuse.z*directionalLight->intensity);
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.specular"), directionalLight->specular.x, directionalLight->specular.y, directionalLight->specular.z);
 
 			if(pointLight.size() < maxPointLight)
@@ -421,7 +435,7 @@ void Scene::Update()
 				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".quadratic").c_str()), pointLight[a]->quadratic);
 
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), pointLight[a]->ambient.x, pointLight[a]->ambient.y, pointLight[a]->ambient.z);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), pointLight[a]->diffuse.x, pointLight[a]->diffuse.y, pointLight[a]->diffuse.z);
+				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), pointLight[a]->diffuse.x*pointLight[a]->intensity, pointLight[a]->diffuse.y*pointLight[a]->intensity, pointLight[a]->diffuse.z*pointLight[a]->intensity);
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), pointLight[a]->specular.x, pointLight[a]->specular.y, pointLight[a]->specular.z);
 
 				if(a >= maxPointLight-1)
@@ -452,7 +466,7 @@ void Scene::Update()
 				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".outerCutOff").c_str()), glm::cos(glm::radians(spotLight[a]->outerCutOff)));
 
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), spotLight[a]->ambient.x, spotLight[a]->ambient.y, spotLight[a]->ambient.z);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), spotLight[a]->diffuse.x, spotLight[a]->diffuse.y, spotLight[a]->diffuse.z);
+				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), spotLight[a]->diffuse.x*spotLight[a]->intensity, spotLight[a]->diffuse.y*spotLight[a]->intensity, spotLight[a]->diffuse.z*spotLight[a]->intensity);
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), spotLight[a]->specular.x, spotLight[a]->specular.y, spotLight[a]->specular.z);
 
 				if(a >= maxSpotLight-1)
@@ -477,4 +491,9 @@ void Scene::SetScreen(GLfloat width, GLfloat height)
 {
 	screenWidth = width;
 	screenHeight = height;
+}
+
+void Scene::SetGamma(GLfloat volume)
+{
+	gamma = volume;	
 }

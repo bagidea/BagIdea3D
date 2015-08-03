@@ -33,6 +33,9 @@ void Start()
 
 	scene = new Scene();
 
+	//Gamma
+	scene->SetGamma(1.75f);
+
 	camera = new Camera(45.0f, 0.1f, 500.0f);
 
 	camera->y = 5.0f;
@@ -68,13 +71,13 @@ void Start()
 
 	//PointLight
 	pl1 = new PointLight(-5.0f, 2.0f, 5.0f);
-	pl1->SetColor(Color(0.6f, 0.6f, 2.0f));
+	pl1->SetColor(Color(0.1f, 0.1f, 1.0f));
 	pl2 = new PointLight(5.0f, 2.0f, 5.0f);
-	pl2->SetColor(Color(2.0f, 0.6f, 0.6f));
+	pl2->SetColor(Color(1.0f, 0.1f, 0.1f));
 	pl3 = new PointLight(-5.0f, 2.0f, -5.0f);
-	pl3->SetColor(Color(0.6f, 2.0f, 0.6f));
+	pl3->SetColor(Color(0.1f, 1.0f, 0.1f));
 	pl4 = new PointLight(5.0f, 2.0f, -5.0f);
-	pl4->SetColor(Color(2.0f, 2.0f, 2.0f));
+	pl4->SetColor(Color(1.0f, 1.0f, 1.0f));
 
 	//Add PointLight
 	scene->AddPointLight(pl1);
@@ -84,7 +87,7 @@ void Start()
 
 	//SpotLight
 	sl = new SpotLight(camera->x, camera->y, camera->z);
-	sl->SetColor(Color(2.0f, 2.0f, 0.5f));
+	sl->SetColor(Color(1.0f, 1.0f, 0.5f));
 
 	//Add SpotLight
 	scene->AddSpotLight(sl);

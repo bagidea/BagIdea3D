@@ -38,6 +38,8 @@ struct DirectionalLight
 	glm::vec3 diffuse;
 	glm::vec3 specular;
 
+	GLfloat intensity;
+
 	DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
 	void SetDirection(GLfloat x, GLfloat y, GLfloat z);
@@ -55,6 +57,8 @@ struct PointLight
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
+
+	GLfloat intensity;
 
 	PointLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	PointLight(GLfloat x, GLfloat y, GLfloat z);
@@ -78,9 +82,11 @@ struct SpotLight
 	glm::vec3 diffuse;
 	glm::vec3 specular;
 
+	GLfloat intensity;
+
 	SpotLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, GLfloat cutOff, GLfloat outerCutOff, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	SpotLight(GLfloat x, GLfloat y, GLfloat z);
-	
+
 	void SetColor(Color color);
 };
 
@@ -114,7 +120,10 @@ public:
 	void Update();
 
 	void SetScreen(GLfloat width, GLfloat height);
+	void SetGamma(GLfloat volume);
 private:
+	GLfloat gamma;
+
 	Camera* mainCamera;
 
 	vector<Prefab*> prefabList;

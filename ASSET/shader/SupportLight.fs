@@ -64,6 +64,8 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform Material material;
 
+uniform float gamma;
+
 vec3 CalcDirectionalLight(DirectionalLight light, Material mat, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
@@ -72,8 +74,10 @@ vec3 CalcDirectionalLight(DirectionalLight light, Material mat, vec3 normal, vec
     float diff = max(dot(normal, lightDir), 0.0);
 
     // Specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess); 
+    //vec3 reflectDir = reflect(-lightDir, normal);
+    //float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), mat.shininess);
 
     // Combine results
     vec3 ambient = light.ambient * vec3(texture(mat.texture_diffuse1, TexCoords));
@@ -91,8 +95,10 @@ vec3 CalcPointLight(PointLight light, Material mat, vec3 normal, vec3 fragPos, v
     float diff = max(dot(normal, lightDir), 0.0);
 
     // Specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
+    //vec3 reflectDir = reflect(-lightDir, normal);
+    //float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), mat.shininess);
 
     // Attenuation
     float distance = length(light.position - fragPos);
@@ -118,8 +124,10 @@ vec3 CalcSpotLight(SpotLight light, Material mat, vec3 normal, vec3 fragPos, vec
     float diff = max(dot(normal, lightDir), 0.0);
 
     // Specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
+    //vec3 reflectDir = reflect(-lightDir, normal);
+    //float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), mat.shininess);
 
     //Spot Light
     float theta = dot(lightDir, normalize(-light.direction));
@@ -168,6 +176,8 @@ void main()
 
     for(i = 0; i < sC; i++)
         result += CalcSpotLight(spotLights[i], material, norm, fragPosition, viewDir);
+
+    result = pow(result, vec3(1.0f/gamma));
         
     color = vec4(result, 1.0f);
 }
