@@ -1,7 +1,9 @@
 #include "BI3D_Material.h"
 
-Material::Material(string vertexShaderPath, string fragmentShaderPath)
+Material::Material(string vertexShaderPath, string fragmentShaderPath, int type)
 {
+	this->type = type;
+
 	program = glCreateProgram();
 
 	vertexShader = CompileShader(LoadSource(vertexShaderPath), GL_VERTEX_SHADER);
@@ -39,6 +41,11 @@ Material::~Material()
 void Material::Bind()
 {
 	glUseProgram(program);
+}
+
+int Material::GetType()
+{
+	return type;
 }
 
 GLuint Material::CompileShader(string source, unsigned int type)

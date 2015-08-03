@@ -33,7 +33,13 @@ void Mesh::Update(Material* material)
 
 		number = ss.str();
 
-		glUniform1i(glGetUniformLocation(material->program, (name+number).c_str()), i);
+
+
+		if(material->GetType() == BI3D_DEFAULT)		
+			glUniform1i(glGetUniformLocation(material->program, (name+number).c_str()), i);
+		else if(material->GetType() == BI3D_SUPPORT_LIGHT)	
+			glUniform1i(glGetUniformLocation(material->program, ("material."+name+number).c_str()), i);
+
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 

@@ -14,7 +14,7 @@ Object::Object()
 
 	directory = "";
 
-	material = new Material("shader/Default.vs", "shader/Default.fs");
+	material = new Material("shader/Default.vs", "shader/Default.fs", BI3D_DEFAULT);
 
 	clone = false;
 }
@@ -105,6 +105,20 @@ void Object::LookAt(GLfloat x, GLfloat y, GLfloat z)
 	rotationZ = glm::degrees(0.0f);
 }
 
+void Object::SetMaterialMode(int mode)
+{
+	if(material != NULL)
+	{
+		delete material;
+		material = NULL;
+	}
+
+	if(mode == BI3D_DEFAULT)
+		material = new Material("shader/Default.vs", "shader/Default.fs", mode);
+	else if(mode == BI3D_SUPPORT_LIGHT)
+		material = new Material("shader/SupportLight.vs", "shader/SupportLight.fs", mode);
+}
+
 void Object::Update(Camera* camera)
 {
 	glm::mat4 _model;
@@ -142,10 +156,6 @@ void Object::Update(Camera* camera)
 	if(camera != NULL)
 	{
 		glm::mat4 position = glm::translate(glm::mat4(), glm::vec3(-x, y, z));
-
-		glm::vec3 vec();
-		//glm::quat quat(glm::vec3(glm::radians(rotationX), glm::radians(-rotationY), glm::radians(-rotationZ)));
-		//glm::mat4 rotation = glm::mat4_cast(quat);
 		glm::mat4 roX = glm::rotate(glm::mat4(), glm::radians(rotationX), glm::vec3(1.0f, 0.0f, 0.0f));
 		glm::mat4 roY = glm::rotate(glm::mat4(), glm::radians(-rotationY), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 roZ = glm::rotate(glm::mat4(), glm::radians(-rotationZ), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -238,17 +248,34 @@ Mesh* Object::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 vector<Texture> Object::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 {
 	vector<Texture> textures;
+	vector<Texture> textureList;
 	
 	for(GLuint i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
 
-		Texture texture;
-		texture.id = LoadImage(directory+"/"+str.C_Str());
-		texture.type = typeName;
-		texture.path = str;
-		textures.push_back(texture);
+		GLboolean skip = false;
+
+		for(GLuint a = 0; a < textureList.size(); a++)
+		{
+			if(textureList[a].path == str)
+			{
+				textures.push_back(textureList[a]);
+				skip = true;
+				break;
+			}
+		}
+
+		if(!skip)
+		{
+			Texture texture;
+			texture.id = LoadImage(directory+"/"+str.C_Str());
+			texture.type = typeName;
+			texture.path = str;
+			textures.push_back(texture);
+			textureList.push_back(texture);
+		}
 	}
 
 	return textures;

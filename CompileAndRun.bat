@@ -11,7 +11,20 @@ SET FLAG_COMPILE=-w -Wl,-subsystem,windows
 SET FLAG_LIBRARY=-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lopengl32 -lglew32 -lglew32mx -lassimp
 
 SET HEADER=-IBI3D/include
+
 SET SOURCE=main.cpp
+
+ECHO :::: BagIdea3D ::::
+
+SET DEBUG=n
+
+SET /P DEBUG=Compile Sample (y): 
+
+IF %DEBUG% == y (
+	SET /P SOURCE=Sample file: 
+)
+
+ECHO Compile %SOURCE%
 
 FOR %%F in ("BI3D/*.cpp") DO (
 	SET SOURCE=!SOURCE! BI3D\%%F
@@ -19,7 +32,6 @@ FOR %%F in ("BI3D/*.cpp") DO (
 
 SET DEBUG=n
 
-ECHO :::: BagIdea3D ::::
 SET /P DEBUG=Show Debug Enter (y): 
 
 IF %DEBUG% == y (

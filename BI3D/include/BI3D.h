@@ -29,13 +29,6 @@ struct Mouse
 	int x, y;
 };
 
-struct Color
-{
-	GLfloat r, g, b, a;
-	Color();
-	Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
-};
-
 class BI3D
 {
 public:

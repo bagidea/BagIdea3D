@@ -7,6 +7,9 @@
 
 #include <GL/glew.h>
 
+#define BI3D_DEFAULT 0
+#define BI3D_SUPPORT_LIGHT 1
+
 using namespace std;
 
 class Material
@@ -14,11 +17,14 @@ class Material
 public:
 	GLuint program;
 	
-	Material(string vertexShaderPath, string fragmentShaderPath);
+	Material(string vertexShaderPath, string fragmentShaderPath, int type);
 	~Material();
 
 	void Bind();
+	int GetType();
 private:
+	int type;
+
 	GLuint vertexShader;
 	GLuint fragmentShader;
 

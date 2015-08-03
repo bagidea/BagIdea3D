@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include <GL/glew.h>
 
@@ -13,6 +14,14 @@
 
 using namespace std;
 
+struct Color
+{
+	GLfloat r, g, b, a;
+	Color();
+	Color(GLfloat r, GLfloat g, GLfloat b);
+	Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+};
+
 struct Prefab
 {
 	Material* material;
@@ -20,6 +29,59 @@ struct Prefab
 	string name;
 
 	Prefab(Material* material, Object* object, string name);
+};
+
+struct DirectionalLight
+{
+	glm::vec3 direction;
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+
+	DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+
+	void SetDirection(GLfloat x, GLfloat y, GLfloat z);
+	void SetColor(Color color);
+};
+
+struct PointLight
+{
+	GLfloat x, y ,z;
+
+	GLfloat constant;
+    GLfloat linear;
+    GLfloat quadratic;
+
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+
+	PointLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	PointLight(GLfloat x, GLfloat y, GLfloat z);
+
+	void SetColor(Color color);
+};
+
+struct SpotLight
+{
+	GLfloat x, y, z, rotationX, rotationY, rotationZ;
+	glm::vec3 direction;
+
+	GLfloat constant;
+    GLfloat linear;
+    GLfloat quadratic;
+
+    GLfloat cutOff;
+	GLfloat outerCutOff;
+
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+
+	SpotLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, GLfloat cutOff, GLfloat outerCutOff, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	SpotLight(GLfloat x, GLfloat y, GLfloat z);
+	
+	void SetColor(Color color);
 };
 
 class Scene
@@ -31,9 +93,20 @@ public:
 	void AddChild(Object* object);
 	void DeleteChild(Object* object);
 
+	void AddMaterial(Material* material);
+	void DeleteMaterial(Material* material);
 	void CreatePrefab(Object* object, string name);
 	void DeletePrefab(string name);
 	Object* GetPrefab(string name);
+
+	void SetDirectionalLightDirection(GLfloat x, GLfloat y, GLfloat z);
+	void SetDirectionalLightColor(Color color);
+
+	void AddPointLight(PointLight* light);
+	void DeletePointLight(PointLight* light);
+
+	void AddSpotLight(SpotLight* light);
+	void DeleteSpotLight(SpotLight* light);
 
 	void SetCamera(Camera* camera);
 	void ClearCamera();
@@ -48,6 +121,14 @@ private:
 	vector<Material*> materialList;
 	vector<Object*> objectList;
 
+	//Light
+	DirectionalLight* directionalLight;
+	GLint maxPointLight;
+	vector<PointLight*> pointLight;
+	GLint maxSpotLight;
+	vector<SpotLight*> spotLight;
+
+	//Screen Resolution
 	int screenWidth, screenHeight;
 };
 

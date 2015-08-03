@@ -1,21 +1,5 @@
 #include "BI3D.h"
 
-Color::Color()
-{
-	r = 0.0f;
-	g = 0.0f;
-	b = 0.0f;
-	a = 1.0f;
-}
-
-Color::Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
-{
-	this->r = r;
-	this->g = g;
-	this->b = b;
-	this->a = a;
-}
-
 BI3D::BI3D(string title, int width, int height)
 {
 	srand(time(NULL));
