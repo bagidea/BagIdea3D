@@ -9,6 +9,7 @@
 
 #define BI3D_DEFAULT 0
 #define BI3D_SUPPORT_LIGHT 1
+#define BI3D_SUPPORT_LIGHT_AND_NORMALMAP 2
 
 using namespace std;
 

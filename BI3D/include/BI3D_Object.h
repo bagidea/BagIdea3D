@@ -20,6 +20,9 @@
 #include "BI3D_Mesh.h"
 
 #define MATH_PI 3.14159265359f
+#define BI3D_TEXTURE_DIFFUSE 0
+#define BI3D_TEXTURE_SPECULAR 1
+#define BI3D_TEXTURE_NORMAL 2
 
 using namespace std;
 
@@ -33,7 +36,8 @@ public:
 	Object();
 	~Object();
 
-	void Load(string path);
+	void LoadTexture(string path, int type = BI3D_TEXTURE_DIFFUSE);
+	void Load(string path, int mode = BI3D_LOAD_DEFAULT);
 	void LoadPrefab(Object* ob);
 	void LookAt(GLfloat x, GLfloat y, GLfloat z);
 	void SetMaterialMode(int mode);
@@ -44,12 +48,20 @@ public:
 	vector<Mesh*> GetMesh();
 	string GetDirectory();
 	bool GetClone();
+	int GetMode();
 private:
 	Material* material;
 	vector<Mesh*> meshList;
 	string directory;
 
+	int mode;
 	bool clone;
+
+	vector<Texture> _diffuseMaps;
+	vector<Texture> _specularMaps;
+	vector<Texture> _normalMaps;
+
+	bool autoLoadTexture;
 
 	void ProcessNode(aiNode* node, const aiScene* scene);
 	Mesh* ProcessMesh(aiMesh* mesh, const aiScene* scene);

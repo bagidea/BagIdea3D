@@ -46,9 +46,19 @@ void DirectionalLight::SetDirection(GLfloat x, GLfloat y, GLfloat z)
 	direction = glm::vec3(x, y, z);
 }
 
+void DirectionalLight::SetAmbient(Color color)
+{
+	ambient = glm::vec3(color.r, color.g, color.b);
+}
+
 void DirectionalLight::SetColor(Color color)
 {
 	diffuse = glm::vec3(color.r, color.g, color.b);
+}
+
+void DirectionalLight::SetSpecular(Color color)
+{
+	specular = glm::vec3(color.r, color.g, color.b);
 }
 
 PointLight::PointLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
@@ -65,7 +75,7 @@ PointLight::PointLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLf
 	this->diffuse = diffuse;
 	this->specular = specular;
 
-	this->intensity = 2.5f;
+	this->intensity = 1.0f;
 }
 
 PointLight::PointLight(GLfloat x, GLfloat y, GLfloat z)
@@ -82,12 +92,22 @@ PointLight::PointLight(GLfloat x, GLfloat y, GLfloat z)
 	this->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
 	this->specular = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	this->intensity = 2.5f;
+	this->intensity = 1.0f;
+}
+
+void PointLight::SetAmbient(Color color)
+{
+	ambient = glm::vec3(color.r, color.g, color.b);
 }
 
 void PointLight::SetColor(Color color)
 {
 	diffuse = glm::vec3(color.r, color.g, color.b);
+}
+
+void PointLight::SetSpecular(Color color)
+{
+	specular = glm::vec3(color.r, color.g, color.b);
 }
 
 SpotLight::SpotLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, GLfloat cutOff, GLfloat outerCutOff, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
@@ -109,7 +129,7 @@ SpotLight::SpotLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLflo
 	this->diffuse = diffuse;
 	this->specular = specular;
 
-	this->intensity = 2.5f;
+	this->intensity = 1.0f;
 }
 
 SpotLight::SpotLight(GLfloat x, GLfloat y, GLfloat z)
@@ -135,12 +155,22 @@ SpotLight::SpotLight(GLfloat x, GLfloat y, GLfloat z)
 	this->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
 	this->specular = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	this->intensity = 2.5f;
+	this->intensity = 1.0f;
+}
+
+void SpotLight::SetAmbient(Color color)
+{
+	ambient = glm::vec3(color.r, color.g, color.b);
 }
 
 void SpotLight::SetColor(Color color)
 {
 	diffuse = glm::vec3(color.r, color.g, color.b);
+}
+
+void SpotLight::SetSpecular(Color color)
+{
+	specular = glm::vec3(color.r, color.g, color.b);
 }
 
 Scene::Scene()
@@ -333,9 +363,24 @@ void Scene::SetDirectionalLightDirection(GLfloat x, GLfloat y, GLfloat z)
 	directionalLight->SetDirection(x, y, z);
 }
 
+void Scene::SetDirectionalLightAmbient(Color color)
+{
+	directionalLight->ambient = glm::vec3(color.r, color.g, color.b);
+}
+
 void Scene::SetDirectionalLightColor(Color color)
 {
 	directionalLight->diffuse = glm::vec3(color.r, color.g, color.b);
+}
+
+void Scene::SetDirectionalLightSpecular(Color color)
+{
+	directionalLight->specular = glm::vec3(color.r, color.g, color.b);
+}
+
+void Scene::SetDirectionalLightIntensity(GLfloat intensity)
+{
+	directionalLight->intensity = intensity;
 }
 
 void Scene::AddPointLight(PointLight* light)
@@ -410,7 +455,7 @@ void Scene::Update()
 
 		glUniform1f(glGetUniformLocation(materialList[i]->program, "gamma"), gamma);
 
-		if(materialList[i]->GetType() == BI3D_SUPPORT_LIGHT)
+		if(materialList[i]->GetType() == BI3D_SUPPORT_LIGHT || materialList[i]->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)
 		{
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.direction"), directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.ambient"), directionalLight->ambient.x, directionalLight->ambient.y, directionalLight->ambient.z);

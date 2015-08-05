@@ -86,6 +86,7 @@ bool BI3D::Start()
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_MULTISAMPLE);
 	//glEnable(GL_FRAMEBUFFER_SRGB);
 
 	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);

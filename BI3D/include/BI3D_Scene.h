@@ -43,7 +43,9 @@ struct DirectionalLight
 	DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
 	void SetDirection(GLfloat x, GLfloat y, GLfloat z);
+	void SetAmbient(Color color);
 	void SetColor(Color color);
+	void SetSpecular(Color color);
 };
 
 struct PointLight
@@ -63,7 +65,9 @@ struct PointLight
 	PointLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	PointLight(GLfloat x, GLfloat y, GLfloat z);
 
+	void SetAmbient(Color color);
 	void SetColor(Color color);
+	void SetSpecular(Color color);
 };
 
 struct SpotLight
@@ -87,7 +91,9 @@ struct SpotLight
 	SpotLight(glm::vec3 position, GLfloat constant, GLfloat linear, GLfloat quadratic, GLfloat cutOff, GLfloat outerCutOff, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	SpotLight(GLfloat x, GLfloat y, GLfloat z);
 
+	void SetAmbient(Color color);
 	void SetColor(Color color);
+	void SetSpecular(Color color);
 };
 
 class Scene
@@ -106,7 +112,10 @@ public:
 	Object* GetPrefab(string name);
 
 	void SetDirectionalLightDirection(GLfloat x, GLfloat y, GLfloat z);
+	void SetDirectionalLightAmbient(Color color);
 	void SetDirectionalLightColor(Color color);
+	void SetDirectionalLightSpecular(Color color);
+	void SetDirectionalLightIntensity(GLfloat intensity);
 
 	void AddPointLight(PointLight* light);
 	void DeletePointLight(PointLight* light);
