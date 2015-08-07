@@ -37,7 +37,7 @@ public:
 	~Object();
 
 	void LoadTexture(string path, int type = BI3D_TEXTURE_DIFFUSE);
-	void Load(string path, int mode = BI3D_LOAD_DEFAULT);
+	void Load(string path);
 	void LoadPrefab(Object* ob);
 	void LookAt(GLfloat x, GLfloat y, GLfloat z);
 	void SetMaterialMode(int mode);
@@ -49,13 +49,11 @@ public:
 	vector<Mesh*> GetMesh();
 	string GetDirectory();
 	bool GetClone();
-	int GetMode();
 private:
 	Material* material;
 	vector<Mesh*> meshList;
 	string directory;
 
-	int mode;
 	bool clone;
 
 	vector<Texture> _diffuseMaps;

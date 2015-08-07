@@ -49,9 +49,9 @@ void Start()
 	plane->LoadTexture("source/model/plane.jpg", BI3D_TEXTURE_DIFFUSE);
 	plane->LoadTexture("source/model/planeSpec.jpg", BI3D_TEXTURE_SPECULAR);
 	plane->LoadTexture("source/model/planeNorm.jpg", BI3D_TEXTURE_NORMAL);
-	plane->Load("source/model/plane.obj", BI3D_LOAD_NORMALMAP);
+	plane->Load("source/model/plane.obj");
 	plane->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
-	plane->SetShininess(16.0f);
+	//plane->SetShininess(512.0f);
 
 	plane->scaleX = 10.0f;
 	plane->scaleZ = 10.0f;
@@ -59,7 +59,7 @@ void Start()
 	scene->AddChild(plane);
 
 	model = new Object();
-	model->Load("source/model/nanosuit/nanosuit.obj", BI3D_LOAD_NORMALMAP);
+	model->Load("source/model/nanosuit/nanosuit.obj");
 	model->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
 
 	model->x = -3.0f;
@@ -75,7 +75,7 @@ void Start()
 	model2->LoadTexture("source/model/res/Imrod_Diffuse.png", BI3D_TEXTURE_DIFFUSE);
 	model2->LoadTexture("source/model/res/Imrod_spec.png", BI3D_TEXTURE_SPECULAR);
 	model2->LoadTexture("source/model/res/Imrod_norm.png", BI3D_TEXTURE_NORMAL);
-	model2->Load("source/model/res/ImrodLowPoly.obj", BI3D_LOAD_NORMALMAP);
+	model2->Load("source/model/res/ImrodLowPoly.obj");
 	model2->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
 
 	model2->x = 3.0f;
@@ -97,16 +97,16 @@ void Start()
 	//PointLight
 	pl1 = new PointLight(-5.0f, 1.0f, 5.0f);
 	pl1->SetColor(Color(0.0f, 0.0f, 5.0f));
-	pl1->SetSpecular(Color(0.1f, 0.1f, 0.5f));
+	pl1->SetSpecular(Color(0.2f, 0.2f, 1.0f));
 	pl2 = new PointLight(5.0f, 1.0f, 5.0f);
 	pl2->SetColor(Color(5.0f, 0.0f, 0.0f));
-	pl2->SetSpecular(Color(0.5f, 0.1f, 0.1f));
+	pl2->SetSpecular(Color(5.0f, 0.2f, 0.2f));
 	pl3 = new PointLight(-5.0f, 1.0f, -5.0f);
 	pl3->SetColor(Color(0.0f, 5.0f, 0.0f));
-	pl3->SetSpecular(Color(0.1f, 0.5f, 0.1f));
+	pl3->SetSpecular(Color(0.2f, 1.0f, 0.2f));
 	pl4 = new PointLight(5.0f, 1.0f, -5.0f);
 	pl4->SetColor(Color(5.0f, 5.0f, 5.0f));
-	pl4->SetSpecular(Color(0.5f, 0.5f, 0.4f));
+	pl4->SetSpecular(Color(1.0f, 1.0f, 1.0f));
 
 	//Add PointLight
 	scene->AddPointLight(pl1);

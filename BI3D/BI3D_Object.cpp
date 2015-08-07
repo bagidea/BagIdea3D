@@ -2,8 +2,6 @@
 
 Object::Object()
 {
-	mode = BI3D_LOAD_DEFAULT;
-
 	x = 0.0f;
 	y = 0.0f;
 	z = 0.0f;
@@ -70,7 +68,7 @@ void Object::LoadTexture(string path, int type)
 	autoLoadTexture = false;
 }
 
-void Object::Load(string path, int mode)
+void Object::Load(string path)
 {
 	Assimp::Importer importer;
 
@@ -79,12 +77,7 @@ void Object::Load(string path, int mode)
 	//const aiScene* scene = importer.ReadFile(path, flag);
 	const aiScene* scene;
 
-	if(mode == BI3D_LOAD_DEFAULT)
-		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-	else if(mode == BI3D_LOAD_NORMALMAP)
-		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-
-	this->mode = mode;
+	scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
 	if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -101,8 +94,6 @@ void Object::Load(string path, int mode)
 
 void Object::LoadPrefab(Object* ob)
 {
-	mode = ob->GetMode();
-
 	x = ob->x;
 	y = ob->y;
 	z = ob->z;
@@ -222,7 +213,6 @@ Material* Object::GetMaterial(){return material;}
 vector<Mesh*> Object::GetMesh(){return meshList;}
 string Object::GetDirectory(){return directory;}
 bool Object::GetClone(){return clone;}
-int Object::GetMode(){return mode;}
 
 void Object::ProcessNode(aiNode* node, const aiScene* scene)
 {
@@ -241,31 +231,23 @@ void Object::ProcessNode(aiNode* node, const aiScene* scene)
 Mesh* Object::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
 	vector<Vertex> vertices;
-	vector<Vertex2> vertices2;
 	vector<GLuint> indices;
 	vector<Texture> textures;
 
 	for(GLuint i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
-		Vertex2 vertex2;
 		glm::vec3 vector;
 
 	 	vector.x = mesh->mVertices[i].x;
 		vector.y = mesh->mVertices[i].y;
 		vector.z = mesh->mVertices[i].z;
-		if(mode == BI3D_LOAD_DEFAULT)
-	    	vertex.position = vector;
-	    else if(mode == BI3D_LOAD_NORMALMAP)
-	    	vertex2.position = vector;
+	    vertex.position = vector;
 
 		vector.x = mesh->mNormals[i].x;
 		vector.y = mesh->mNormals[i].y;
 		vector.z = mesh->mNormals[i].z;
-		if(mode == BI3D_LOAD_DEFAULT)
-			vertex.normal = vector;
-		else if(mode == BI3D_LOAD_NORMALMAP)
-			vertex2.normal = vector;
+		vertex.normal = vector;
 
 		if(mesh->mTextureCoords[0])
 		{
@@ -273,34 +255,12 @@ Mesh* Object::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
 			vec.x = mesh->mTextureCoords[0][i].x; 
 			vec.y = mesh->mTextureCoords[0][i].y;
-			if(mode == BI3D_LOAD_DEFAULT)
-				vertex.texCoord = vec;
-			else if(mode == BI3D_LOAD_NORMALMAP)
-				vertex2.texCoord = vec;
+			vertex.texCoord = vec;
 		}else{
-			if(mode == BI3D_LOAD_DEFAULT)
-				vertex.texCoord = glm::vec2(0.0f, 0.0f);
-			else if(mode == BI3D_LOAD_NORMALMAP)
-				vertex2.texCoord = glm::vec2(0.0f, 0.0f);
+			vertex.texCoord = glm::vec2(0.0f, 0.0f);
 		}
 
-		if(mode == BI3D_LOAD_NORMALMAP)
-		{
-			vector.x = mesh->mTangents[i].x;
-			vector.y = mesh->mTangents[i].y;
-			vector.z = mesh->mTangents[i].z;
-			vertex2.tangent = vector;
-
-			vector.x = mesh->mBitangents[i].x;
-			vector.y = mesh->mBitangents[i].y;
-			vector.z = mesh->mBitangents[i].z;
-			vertex2.bitangent = vector;
-		}
-
-		if(mode == BI3D_LOAD_DEFAULT)
-			vertices.push_back(vertex);
-		else if(mode == BI3D_LOAD_NORMALMAP)
-			vertices2.push_back(vertex2);
+		vertices.push_back(vertex);
 	}
 
 	for(GLuint i = 0; i < mesh->mNumFaces; i++)
@@ -323,24 +283,16 @@ Mesh* Object::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 			vector<Texture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-			if(mode == BI3D_LOAD_NORMALMAP)
-			{
-				vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-				textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-			}
+			vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		}
 	}else{
 		textures.insert(textures.end(), _diffuseMaps.begin(), _diffuseMaps.end());
 		textures.insert(textures.end(), _specularMaps.begin(), _specularMaps.end());
-		
-		if(mode == BI3D_LOAD_NORMALMAP)
-			textures.insert(textures.end(), _normalMaps.begin(), _normalMaps.end());
+		textures.insert(textures.end(), _normalMaps.begin(), _normalMaps.end());
 	}
 
-	if(mode == BI3D_LOAD_DEFAULT)
-		return new Mesh(vertices, indices, textures);
-	else if(mode == BI3D_LOAD_NORMALMAP)
-		return new Mesh(vertices2, indices, textures);
+	return new Mesh(vertices, indices, textures);
 }
 
 vector<Texture> Object::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
