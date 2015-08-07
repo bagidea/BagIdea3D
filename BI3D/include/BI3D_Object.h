@@ -41,6 +41,7 @@ public:
 	void LoadPrefab(Object* ob);
 	void LookAt(GLfloat x, GLfloat y, GLfloat z);
 	void SetMaterialMode(int mode);
+	void SetShininess(GLfloat shininess);
 
 	void Update(Camera* camera);
 

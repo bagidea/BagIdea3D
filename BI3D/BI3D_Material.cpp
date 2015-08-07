@@ -3,6 +3,7 @@
 Material::Material(string vertexShaderPath, string fragmentShaderPath, int type)
 {
 	this->type = type;
+	this->shininess = 128.0f;
 
 	program = glCreateProgram();
 

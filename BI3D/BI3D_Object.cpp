@@ -162,6 +162,11 @@ void Object::SetMaterialMode(int mode)
 		material = new Material("shader/SupportLightAndNormalMap.vs", "shader/SupportLightAndNormalMap.fs", mode);
 }
 
+void Object::SetShininess(GLfloat shininess)
+{
+	material->shininess = shininess;
+}
+
 void Object::Update(Camera* camera)
 {
 	glm::mat4 _model;

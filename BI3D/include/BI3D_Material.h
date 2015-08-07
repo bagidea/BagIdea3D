@@ -17,6 +17,7 @@ class Material
 {
 public:
 	GLuint program;
+	GLfloat shininess;
 	
 	Material(string vertexShaderPath, string fragmentShaderPath, int type);
 	~Material();

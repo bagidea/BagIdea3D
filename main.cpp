@@ -51,6 +51,7 @@ void Start()
 	plane->LoadTexture("source/model/planeNorm.jpg", BI3D_TEXTURE_NORMAL);
 	plane->Load("source/model/plane.obj", BI3D_LOAD_NORMALMAP);
 	plane->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
+	plane->SetShininess(8.0f);
 
 	plane->scaleX = 10.0f;
 	plane->scaleZ = 10.0f;
@@ -88,19 +89,23 @@ void Start()
 
 	//DirectionalLight
 	//scene->SetDirectionalLightDirection(3.0f, -1.0f, 5.0f);
-	scene->SetDirectionalLightAmbient(Color(0.01f, 0.01f, 0.01f));
+	//scene->SetDirectionalLightAmbient(Color(0.0f, 0.0f, 0.0f));
 	//scene->SetDirectionalLightColor(Color(1.0f, 1.0f, 1.0f));
 	//scene->SetDirectionalLightIntensity(1.0f);
 
 	//PointLight
 	pl1 = new PointLight(-5.0f, 1.0f, 5.0f);
 	pl1->SetColor(Color(0.0f, 0.0f, 5.0f));
+	pl1->SetSpecular(Color(0.2f, 0.2f, 1.0f));
 	pl2 = new PointLight(5.0f, 1.0f, 5.0f);
 	pl2->SetColor(Color(5.0f, 0.0f, 0.0f));
+	pl2->SetSpecular(Color(5.0f, 0.2f, 0.2f));
 	pl3 = new PointLight(-5.0f, 1.0f, -5.0f);
 	pl3->SetColor(Color(0.0f, 5.0f, 0.0f));
+	pl3->SetSpecular(Color(0.2f, 1.0f, 0.2f));
 	pl4 = new PointLight(5.0f, 1.0f, -5.0f);
 	pl4->SetColor(Color(5.0f, 5.0f, 5.0f));
+	pl4->SetSpecular(Color(1.0f, 1.0f, 1.0f));
 
 	//Add PointLight
 	scene->AddPointLight(pl1);
@@ -120,7 +125,7 @@ void Start()
 
 	bis->SetMouseInWindow(400, 300);
 
-	camera->LookAt(model->x, model->y+2.0f, model->z);
+	camera->LookAt(0.0f, 1.0f, 0.0f);
 }
 
 void CameraRotate()
@@ -141,13 +146,13 @@ void CameraRotate()
 void CameraMove()
 {
 	if(upK)
-		camera->MoveForward(0.05f);
+		camera->MoveForward(0.1f);
 	else if(downK)
-		camera->MoveForward(-0.05f);
+		camera->MoveForward(-0.1f);
 	if(leftK)
-		camera->MoveRight(-0.05f);
+		camera->MoveRight(-0.1f);
 	else if(rightK)
-		camera->MoveRight(0.05f);
+		camera->MoveRight(0.1f);
 }
 
 void Update()
@@ -155,6 +160,7 @@ void Update()
 	CameraRotate();
 	CameraMove();
 
+	//plane->rotationY += 0.1f;
 	model->rotationY += 1.0f;
 	model2->rotationY += 1.0f;
 

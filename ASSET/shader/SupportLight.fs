@@ -47,8 +47,8 @@ struct SpotLight
 #define MAX_SPOT_LIGHTS 128
 
 in vec3 fragPosition;
-in vec3 Normal;
 in vec2 TexCoords;
+in vec3 Normal;
 
 out vec4 color;
 

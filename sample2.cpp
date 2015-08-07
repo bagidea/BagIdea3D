@@ -104,7 +104,7 @@ void Start()
 
 	bis->SetMouseInWindow(400, 300);
 
-	camera->LookAt(model->x, model->y+2.0f, model->z);
+	camera->LookAt(0.0f, 1.0f, 0.0f);
 }
 
 void CameraRotate()
