@@ -460,7 +460,7 @@ void Scene::Update()
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.direction"), directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.ambient"), directionalLight->ambient.x, directionalLight->ambient.y, directionalLight->ambient.z);
 			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.diffuse"), directionalLight->diffuse.x*directionalLight->intensity, directionalLight->diffuse.y*directionalLight->intensity, directionalLight->diffuse.z*directionalLight->intensity);
-			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.specular"), directionalLight->specular.x, directionalLight->specular.y, directionalLight->specular.z);
+			glUniform3f(glGetUniformLocation(materialList[i]->program, "directionalLight.specular"), directionalLight->specular.x*directionalLight->intensity, directionalLight->specular.y*directionalLight->intensity, directionalLight->specular.z*directionalLight->intensity);
 
 			if(pointLight.size() < maxPointLight)
 				glUniform1i(glGetUniformLocation(materialList[i]->program, "countPointLight"), pointLight.size());
@@ -481,7 +481,7 @@ void Scene::Update()
 
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), pointLight[a]->ambient.x, pointLight[a]->ambient.y, pointLight[a]->ambient.z);
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), pointLight[a]->diffuse.x*pointLight[a]->intensity, pointLight[a]->diffuse.y*pointLight[a]->intensity, pointLight[a]->diffuse.z*pointLight[a]->intensity);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), pointLight[a]->specular.x, pointLight[a]->specular.y, pointLight[a]->specular.z);
+				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), pointLight[a]->specular.x*pointLight[a]->intensity, pointLight[a]->specular.y*pointLight[a]->intensity, pointLight[a]->specular.z*pointLight[a]->intensity);
 
 				if(a >= maxPointLight-1)
 					break;
@@ -512,7 +512,7 @@ void Scene::Update()
 
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), spotLight[a]->ambient.x, spotLight[a]->ambient.y, spotLight[a]->ambient.z);
 				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), spotLight[a]->diffuse.x*spotLight[a]->intensity, spotLight[a]->diffuse.y*spotLight[a]->intensity, spotLight[a]->diffuse.z*spotLight[a]->intensity);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), spotLight[a]->specular.x, spotLight[a]->specular.y, spotLight[a]->specular.z);
+				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), spotLight[a]->specular.x*spotLight[a]->intensity, spotLight[a]->specular.y*spotLight[a]->intensity, spotLight[a]->specular.z*spotLight[a]->intensity);
 
 				if(a >= maxSpotLight-1)
 					break;

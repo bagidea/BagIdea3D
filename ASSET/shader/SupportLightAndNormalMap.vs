@@ -20,14 +20,14 @@ void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0f);
     fragPosition = vec3(model * vec4(position, 1.0f));
-    Normal = mat3(transpose(inverse(projection * view * model))) * -normal;
+    Normal = mat3(transpose(inverse(projection * view * model))) * normal;
     //Normal = ((projection * view * model) * vec4(normal, 0.0)).xyz;
     TexCoords = texCoords;
 
     mat3 normalMatrix = transpose(inverse(mat3(model)));
     vec3 T = normalize(normalMatrix * tangent);
     vec3 B = normalize(normalMatrix * bitangent);
-    vec3 N = normalize(normalMatrix * vec3(normal.x, -normal.y, normal.z));
+    vec3 N = normalize(normalMatrix * -normal);
     
     TBN = transpose(mat3(T, B, N));  
 }

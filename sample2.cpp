@@ -46,9 +46,10 @@ void Start()
 
 	plane = new Object();
 	plane->LoadTexture("source/model/plane.jpg", BI3D_TEXTURE_DIFFUSE);
-	plane->LoadTexture("source/model/planeSpec2.jpg", BI3D_TEXTURE_SPECULAR);
+	plane->LoadTexture("source/model/planeSpec.jpg", BI3D_TEXTURE_SPECULAR);
 	plane->Load("source/model/plane.obj");
 	plane->SetMaterialMode(BI3D_SUPPORT_LIGHT);
+	plane->SetShininess(128.0f);
 
 	plane->scaleX = 10.0f;
 	plane->scaleZ = 10.0f;

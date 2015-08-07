@@ -103,7 +103,7 @@ vec3 CalcPointLight(PointLight light, Material mat, vec3 normal, vec3 fragPos, v
     //vec3 reflectDir = reflect(-lightDir, normal);
     //float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
     vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(normal * normalize(Normal), halfwayDir), 0.0), mat.shininess);
+    float spec = pow(max(dot(normal + normalize(Normal), halfwayDir), 0.0), mat.shininess);
 
     // Attenuation
     float distance = length((TBN*light.position) - fragPos);
