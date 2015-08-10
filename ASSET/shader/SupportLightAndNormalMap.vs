@@ -7,7 +7,6 @@ layout (location = 2) in vec2 texCoords;
 out vec2 TexCoords;
 out vec3 fragPosition;
 out vec3 Normal;
-out vec3 toCameraVector;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -15,11 +14,9 @@ uniform mat4 projection;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
+    vec4 world = model * vec4(position, 1.0f);
+    gl_Position = projection * view * world;
     fragPosition = vec3(model * vec4(position, 1.0f));
-    //Normal = mat3(transpose(inverse(model))) * normal;
-    Normal = (model * vec4(normal, 0.0)).xyz;
+    Normal = mat3(transpose(inverse(model))) * normal;
     TexCoords = texCoords;
-
-    toCameraVector = (inverse(view) * vec4(0, 0, 0, 1)).xyz - vec3(model * vec4(position, 1.0f)).xyz;
 }

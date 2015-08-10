@@ -48,7 +48,7 @@ void Mesh::Update(Material* material)
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 
-	glUniform1f(glGetUniformLocation(material->program, "material.shininess"), material->shininess);
+	glUniform1f(material->gShininess, material->shininess);
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

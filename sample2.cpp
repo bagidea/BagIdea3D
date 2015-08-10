@@ -74,17 +74,17 @@ void Start()
 	scene->SetDirectionalLightSpecular(Color(0.5f, 0.5f, 0.5f));
 
 	//PointLight
-	pl1 = new PointLight(-5.0f, 1.0f, 5.0f);
-	pl1->SetColor(Color(0.0f, 0.0f, 5.0f));
+	pl1 = new PointLight(-5.0f, 2.0f, 5.0f);
+	pl1->SetColor(Color(0.0f, 0.0f, 2.0f));
 	pl1->SetSpecular(Color(0.2f, 0.2f, 1.0f));
-	pl2 = new PointLight(5.0f, 1.0f, 5.0f);
-	pl2->SetColor(Color(5.0f, 0.0f, 0.0f));
+	pl2 = new PointLight(5.0f, 2.0f, 5.0f);
+	pl2->SetColor(Color(2.0f, 0.0f, 0.0f));
 	pl2->SetSpecular(Color(5.0f, 0.2f, 0.2f));
-	pl3 = new PointLight(-5.0f, 1.0f, -5.0f);
-	pl3->SetColor(Color(0.0f, 5.0f, 0.0f));
+	pl3 = new PointLight(-5.0f, 2.0f, -5.0f);
+	pl3->SetColor(Color(0.0f, 2.0f, 0.0f));
 	pl3->SetSpecular(Color(0.2f, 1.0f, 0.2f));
-	pl4 = new PointLight(5.0f, 1.0f, -5.0f);
-	pl4->SetColor(Color(5.0f, 5.0f, 5.0f));
+	pl4 = new PointLight(5.0f, 2.0f, -5.0f);
+	pl4->SetColor(Color(2.0f, 2.0f, 2.0f));
 	pl4->SetSpecular(Color(1.0f, 1.0f, 1.0f));
 
 	//Add PointLight

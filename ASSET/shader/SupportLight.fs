@@ -176,8 +176,6 @@ void main()
 
     for(i = 0; i < sC; i++)
         result += CalcSpotLight(spotLights[i], material, norm, fragPosition, viewDir);
-
-    result = pow(result, vec3(1.0f/gamma));
         
     color = vec4(result, 1.0f);
 }

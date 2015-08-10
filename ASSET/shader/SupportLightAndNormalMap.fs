@@ -50,7 +50,6 @@ struct SpotLight
 in vec3 fragPosition;
 in vec2 TexCoords;
 in vec3 Normal;
-in vec3 toCameraVector;
 
 out vec4 color;
 
@@ -73,13 +72,13 @@ vec3 CalcDirectionalLight(DirectionalLight light, Material mat, vec3 normal, vec
     vec3 lightDir = normalize(-light.direction);
 
     // Diffuse shading
-    float diff = max(0.0f, dot(normalize(Normal), lightDir));
+    float diff = max(dot(normalize(Normal), lightDir), 0.0);
 
     // Specular shading
     //vec3 reflectDir = reflect(-lightDir, normal);
     //float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
-    vec3 halfwayDir = normalize(lightDir + normalize(toCameraVector - fragPosition));
-    float spec = pow(max(dot(-normal, halfwayDir), 0.0), mat.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), mat.shininess);
 
     // Combine results
     vec3 ambient = light.ambient * vec3(texture(mat.texture_diffuse1, TexCoords));
@@ -94,16 +93,16 @@ vec3 CalcPointLight(PointLight light, Material mat, vec3 normal, vec3 fragPos, v
     vec3 lightDir = normalize(light.position - fragPos);
 
     // Diffuse shading
-    float diff = max(0.0f, dot(normalize(Normal), lightDir));
+    float diff = max(dot(normalize(Normal), lightDir), 0.0);
 
     // Specular shading
-    //vec3 reflectDir = reflect(lightDir, -normal);
-    //float spec = pow(max(dot(normalize(toCameraVector - fragPosition), reflectDir), 0.0), mat.shininess);
-    vec3 halfwayDir = normalize(lightDir + normalize(toCameraVector - fragPosition));
-    float spec = pow(max(dot(-normal, halfwayDir), 0.0f), mat.shininess);
+    //vec3 reflectDir = reflect(-lightDir, normal);
+    //float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), mat.shininess);
 
     // Attenuation
-    float distance = -length(light.position - fragPos);
+    float distance = length(light.position - fragPos);
     float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));   
 
     // Combine results
@@ -123,13 +122,13 @@ vec3 CalcSpotLight(SpotLight light, Material mat, vec3 normal, vec3 fragPos, vec
     vec3 lightDir = normalize(light.position - fragPos);
 
     // Diffuse shading
-    float diff = max(0.0f, dot(normalize(Normal), lightDir));
+    float diff = max(dot(normalize(Normal), lightDir), 0.0);
 
     // Specular shading
     //vec3 reflectDir = reflect(-lightDir, normal);
     //float spec = pow(max(dot(viewDir, reflectDir), 0.0), mat.shininess);
-    vec3 halfwayDir = normalize(lightDir + normalize(toCameraVector - fragPosition));
-    float spec = pow(max(dot(-normal, halfwayDir), 0.0), mat.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), mat.shininess);
 
     //Spot Light
     float theta = dot(lightDir, normalize(-light.direction));
@@ -159,10 +158,9 @@ void main()
 {    
     int i;
     vec3 result;
+    vec3 temp = viewPos;
     vec3 viewDir = normalize(viewPos - fragPosition);
-    //vec3 norm = normalize(Normal);
-    vec3 norm = texture(material.texture_normal1, TexCoords).rgb * 2.0f - 1.0f;
-    norm = normalize(norm);
+    vec3 norm = normalize((texture(material.texture_normal1, TexCoords).rgb + Normal) * 2.0f - 1.0f);
 
     result += CalcDirectionalLight(directionalLight, material, norm, fragPosition, viewDir);
 
@@ -181,7 +179,7 @@ void main()
     for(i = 0; i < sC; i++)
         result += CalcSpotLight(spotLights[i], material, norm, fragPosition, viewDir);
 
-    result = pow(result, vec3(1.0f/gamma));
+    //result = pow(result, vec3(1.0f/gamma));
         
     color = vec4(result, 1.0f);
 }

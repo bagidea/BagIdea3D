@@ -28,6 +28,24 @@ Material::Material(string vertexShaderPath, string fragmentShaderPath, int type)
 			cout << error << endl;	
 		}
 	}
+
+	gGamma = glGetUniformLocation(program, "gamma");
+
+	gProjection = glGetUniformLocation(program, "projection");
+	gView = glGetUniformLocation(program, "view");
+	gModel = glGetUniformLocation(program, "model");
+
+	gShininess = glGetUniformLocation(program, "material.shininess");
+
+	gDirectionalLight_Direction = glGetUniformLocation(program, "directionalLight.direction");
+	gDirectionalLight_Ambient = glGetUniformLocation(program, "directionalLight.ambient");
+	gDirectionalLight_Diffuse = glGetUniformLocation(program, "directionalLight.diffuse");
+	gDirectionalLight_Specular = glGetUniformLocation(program, "directionalLight.specular");
+
+	gPointLight_Count = glGetUniformLocation(program, "countPointLight");
+	gSpotLight_Count = glGetUniformLocation(program, "countSpotLight");
+
+	gViewPos = glGetUniformLocation(program, "viewPos");
 }
 
 Material::~Material()

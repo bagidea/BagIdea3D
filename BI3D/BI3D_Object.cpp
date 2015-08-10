@@ -202,7 +202,7 @@ void Object::Update(Camera* camera)
 		glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(scaleX, scaleY, scaleZ));
 		_model = position * rotation * scale;
 
-		glUniformMatrix4fv(glGetUniformLocation(material->program, "model"), 1, GL_FALSE, glm::value_ptr(_model));
+		glUniformMatrix4fv(material->gModel, 1, GL_FALSE, glm::value_ptr(_model));
 
 		for(GLint i = 0; i < meshList.size(); i++)
 			meshList[i]->Update(material);
@@ -372,7 +372,7 @@ unsigned int LoadImage(string path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, img->w, img->h, 0, formatTexture, GL_UNSIGNED_BYTE, img->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, img->w, img->h, 0, formatTexture, GL_UNSIGNED_BYTE, img->pixels);
 
 		SDL_FreeSurface(img);
 		img = NULL;
