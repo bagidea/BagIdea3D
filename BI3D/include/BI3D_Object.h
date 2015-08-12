@@ -26,7 +26,15 @@
 
 using namespace std;
 
-unsigned int LoadImage(string path);
+unsigned int LoadImage(string path,  int& w_, int& h_);
+
+struct Color
+{
+	GLfloat r, g, b, a;
+	Color();
+	Color(GLfloat r, GLfloat g, GLfloat b);
+	Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+};
 
 class Object
 {

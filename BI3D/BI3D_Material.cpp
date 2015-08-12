@@ -29,8 +29,6 @@ Material::Material(string vertexShaderPath, string fragmentShaderPath, int type)
 		}
 	}
 
-	gGamma = glGetUniformLocation(program, "gamma");
-
 	gProjection = glGetUniformLocation(program, "projection");
 	gView = glGetUniformLocation(program, "view");
 	gModel = glGetUniformLocation(program, "model");

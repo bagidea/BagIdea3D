@@ -65,8 +65,6 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform Material material;
 
-uniform float gamma;
-
 vec3 CalcDirectionalLight(DirectionalLight light, Material mat, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
@@ -178,8 +176,6 @@ void main()
 
     for(i = 0; i < sC; i++)
         result += CalcSpotLight(spotLights[i], material, norm, fragPosition, viewDir);
-
-    //result = pow(result, vec3(1.0f/gamma));
         
     color = vec4(result, 1.0f);
 }

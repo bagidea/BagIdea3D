@@ -27,6 +27,9 @@ public:
 	void LookAt(GLfloat x, GLfloat y, GLfloat z);
 
 	glm::mat4 GetTransform();
+
+	GLfloat GetNear();
+	GLfloat GetFar();
 private:
 	GLfloat fov, near, far, ratio;
 };

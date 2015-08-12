@@ -6,8 +6,6 @@ out vec4 color;
 
 uniform sampler2D texture_diffuse1;
 
-uniform float gamma;
-
 void main()
 {   
 	vec3 diffuse = texture(texture_diffuse1, TexCoords).rgb;

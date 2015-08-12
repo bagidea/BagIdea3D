@@ -1,29 +1,5 @@
 #include "BI3D_Scene.h"
 
-Color::Color()
-{
-	r = 0.0f;
-	g = 0.0f;
-	b = 0.0f;
-	a = 1.0f;
-}
-
-Color::Color(GLfloat r, GLfloat g, GLfloat b)
-{
-	this->r = r;
-	this->g = g;
-	this->b = b;
-	this->a = 1.0f;
-}
-
-Color::Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
-{
-	this->r = r;
-	this->g = g;
-	this->b = b;
-	this->a = a;
-}
-
 Prefab::Prefab(Material* material, Object* object, string name)
 {
 	this->material = material;
@@ -175,8 +151,6 @@ void SpotLight::SetSpecular(Color color)
 
 Scene::Scene()
 {
-	gamma = 2.0f;
-
 	mainCamera = NULL;
 	screenWidth = 0.0f;
 	screenHeight = 0.0f;
@@ -184,6 +158,8 @@ Scene::Scene()
 	directionalLight = new DirectionalLight(glm::vec3(3.0f, -1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	maxPointLight = 4;
 	maxSpotLight = 4;
+
+	sprite2DProgram = new Material("shader/Sprite2D.vs", "shader/Sprite2D.fs", BI3D_SPRITE_2D);
 }
 
 Scene::~Scene()
@@ -227,6 +203,17 @@ Scene::~Scene()
 
 	objectList.clear();
 
+	for(GLint i = 0; i < sprite2DList.size(); i++)
+	{
+		if(sprite2DList[i] != NULL)
+		{
+			delete sprite2DList[i];
+			sprite2DList[i] = NULL;
+		}
+	}
+
+	sprite2DList.clear();
+
 	for(GLint i = 0; i < materialList.size(); i++)
 	{
 		if(materialList[i] != NULL)
@@ -237,6 +224,9 @@ Scene::~Scene()
 	}
 
 	materialList.clear();
+
+	delete sprite2DProgram;
+	sprite2DProgram = NULL;
 
 	for(GLint i = 0; i < prefabList.size(); i++)
 	{
@@ -272,6 +262,11 @@ void Scene::AddChild(Object* object)
 	objectList.push_back(object);
 }
 
+void Scene::AddChild(Sprite2D* sprite2D)
+{
+	sprite2DList.push_back(sprite2D);
+}
+
 void Scene::DeleteChild(Object* object)
 {
 	for(GLint i = 0; i < objectList.size(); i++)
@@ -285,6 +280,23 @@ void Scene::DeleteChild(Object* object)
 			}
 
 			objectList.erase(objectList.begin()+i);
+		}
+	}
+}
+
+void Scene::DeleteChild(Sprite2D* sprite2D)
+{
+	for(GLint i = 0; i < sprite2DList.size(); i++)
+	{
+		if(sprite2DList[i] == sprite2D)
+		{
+			if(sprite2DList[i] != NULL)
+			{
+				delete sprite2DList[i];
+				sprite2DList[i] = NULL;
+			}
+
+			sprite2DList.erase(sprite2DList.begin()+i);
 		}
 	}
 }
@@ -442,18 +454,24 @@ void Scene::ClearCamera()
 void Scene::Update()
 {
 	glm::mat4 _projection;
+	glm::mat4 _projection2D;
 	glm::mat4 _view;
-
-	_projection = glm::perspective(45.0f, 800.0f/600.0f, 0.1f, 100.0f);
 	
+	GLfloat near_ = 0.0f;
+	GLfloat far_ = 0.0f;
+
 	if(mainCamera != NULL)
+	{
 		_view = mainCamera->GetTransform();
+		near_ = mainCamera->GetNear();
+		far_ = mainCamera->GetFar();
+	}
+
+	_projection = glm::perspective(45.0f, (GLfloat)(screenWidth)/(GLfloat)(screenHeight), near_, far_);
 
 	for(GLint i = 0; i < materialList.size(); i++)
 	{
 		materialList[i]->Bind();
-
-		glUniform1f(materialList[i]->gGamma, gamma);
 
 		if(materialList[i]->GetType() == BI3D_SUPPORT_LIGHT || materialList[i]->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)
 		{
@@ -530,15 +548,21 @@ void Scene::Update()
 				objectList[a]->Update(mainCamera);
 		}
 	}
+
+	_projection = glm::ortho(0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight), 0.0f, -1.0f, 1.0f);
+
+	sprite2DProgram->Bind();
+
+	glUniformMatrix4fv(sprite2DProgram->gProjection, 1, GL_FALSE, glm::value_ptr(_projection));
+
+	for(GLint i = 0; i < sprite2DList.size(); i++)
+	{
+			sprite2DList[i]->Update(sprite2DProgram);
+	}
 }
 
 void Scene::SetScreen(GLfloat width, GLfloat height)
 {
 	screenWidth = width;
 	screenHeight = height;
-}
-
-void Scene::SetGamma(GLfloat volume)
-{
-	gamma = volume;	
 }

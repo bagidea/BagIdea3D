@@ -10,6 +10,7 @@
 #define BI3D_DEFAULT 0
 #define BI3D_SUPPORT_LIGHT 1
 #define BI3D_SUPPORT_LIGHT_AND_NORMALMAP 2
+#define BI3D_SPRITE_2D 3
 
 using namespace std;
 
@@ -19,7 +20,7 @@ public:
 	GLuint program;
 	GLfloat shininess;
 
-	GLuint gGamma, gShininess, gViewPos;
+	GLuint gShininess, gViewPos;
 	GLuint gProjection, gView, gModel;
 
 	GLuint gDirectionalLight_Direction, gDirectionalLight_Ambient, gDirectionalLight_Diffuse, gDirectionalLight_Specular;

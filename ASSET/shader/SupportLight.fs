@@ -64,8 +64,6 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform Material material;
 
-uniform float gamma;
-
 vec3 CalcDirectionalLight(DirectionalLight light, Material mat, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);

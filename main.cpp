@@ -17,25 +17,23 @@ PointLight* pl4;
 
 SpotLight* sl;
 
+Sprite2D* howTo;
+Sprite2D* logo;
+
 bool upK, downK, leftK, rightK;
-bool upR, downR, leftR, rightR;
+
+bool mouseLock;
 
 void Start()
 {
+	mouseLock = true;
+
 	upK = false;
 	downK = false;
 	leftK = false;
 	rightK = false;
 
-	upR = false;
-	downR = false;
-	leftR = false;
-	rightR = false;
-
 	scene = new Scene();
-
-	//Gamma
-	//scene->SetGamma(1.75f);
 
 	camera = new Camera(45.0f, 0.1f, 500.0f);
 
@@ -97,16 +95,16 @@ void Start()
 	//PointLight
 	pl1 = new PointLight(-5.0f, 2.0f, 5.0f);
 	pl1->SetColor(Color(0.0f, 0.0f, 2.0f));
-	pl1->SetSpecular(Color(0.2f, 0.2f, 1.0f));
+	pl1->SetSpecular(Color(0.0f, 0.0f, 2.0f));
 	pl2 = new PointLight(5.0f, 2.0f, 5.0f);
 	pl2->SetColor(Color(2.0f, 0.0f, 0.0f));
-	pl2->SetSpecular(Color(5.0f, 0.2f, 0.2f));
+	pl2->SetSpecular(Color(2.0f, 0.0f, 0.0f));
 	pl3 = new PointLight(-5.0f, 2.0f, -5.0f);
 	pl3->SetColor(Color(0.0f, 2.0f, 0.0f));
-	pl3->SetSpecular(Color(0.2f, 1.0f, 0.2f));
+	pl3->SetSpecular(Color(0.0f, 2.0f, 0.0f));
 	pl4 = new PointLight(5.0f, 2.0f, -5.0f);
 	pl4->SetColor(Color(2.0f, 2.0f, 2.0f));
-	pl4->SetSpecular(Color(1.0f, 1.0f, 1.0f));
+	pl4->SetSpecular(Color(2.0f, 2.0f, 2.0f));
 
 	//Add PointLight
 	scene->AddPointLight(pl1);
@@ -121,10 +119,25 @@ void Start()
 	//Add SpotLight
 	scene->AddSpotLight(sl);
 
+	//Sprite2D
+	howTo = new Sprite2D();
+	howTo->Load("source/howTo.png");
+
+	scene->AddChild(howTo);
+
+	logo = new Sprite2D();
+	logo->Load("source/logo.png");
+
+	logo->x = bis->GetScreenWidth() - (logo->width + 10.0f);
+	logo->y = bis->GetScreenHeight() - logo->height;
+
+	scene->AddChild(logo);
+
 	bis->AddScene(scene);
 	//bis->DeleteScene(scene);
 
-	bis->SetMouseInWindow(400, 300);
+	bis->ShowMouseCursor(false);
+	bis->SetMouseInWindow(bis->GetScreenWidth() / 2.0f, bis->GetScreenHeight() / 2.0f);
 
 	camera->LookAt(0.0f, 1.0f, 0.0f);
 }
@@ -158,8 +171,11 @@ void CameraMove()
 
 void Update()
 {
-	CameraRotate();
-	CameraMove();
+	if(mouseLock)
+	{
+		CameraRotate();
+		CameraMove();
+	}
 
 	//plane->rotationY += 0.1f;
 	model->rotationY += 1.0f;
@@ -181,28 +197,27 @@ void Input(Event num)
 		switch(num.key.keysym.sym)
 		{
 		case KEY_UP:
-			upR = true;
-			break;
 		case KEY_W:
 			upK = true;
 			break;
 		case KEY_DOWN:
-			downR = true;
-			break;
 		case KEY_S:
 			downK = true;
 			break;
 		case KEY_LEFT:
-			leftR = true;
-			break;
 		case KEY_A:
 			leftK = true;
 			break;
 		case KEY_RIGHT:
-			rightR = true;
-			break;
 		case KEY_D:
 			rightK = true;
+			break;
+		case KEY_ESCAPE:
+			bis->ShowMouseCursor(true);
+			mouseLock = false;
+			break;
+		case KEY_SPACE:
+			camera->LookAt(0.0f, 0.0f, 0.0f);
 			break;
 		}
 		break;
@@ -210,28 +225,35 @@ void Input(Event num)
 		switch(num.key.keysym.sym)
 		{
 		case KEY_UP:
-			upR = false;
-			break;
 		case KEY_W:
 			upK = false;
 			break;
 		case KEY_DOWN:
-			downR = false;
-			break;
 		case KEY_S:
 			downK = false;
 			break;
 		case KEY_LEFT:
-			leftR = false;
-			break;
 		case KEY_A:
 			leftK = false;
 			break;
 		case KEY_RIGHT:
-			rightR = false;
-			break;
 		case KEY_D:
 			rightK = false;
+			break;
+		}
+		break;
+	case MOUSEDOWN:
+		if(MOUSELEFT)
+		{
+			bis->ShowMouseCursor(false);
+			bis->SetMouseInWindow(bis->GetScreenWidth() / 2.0f, bis->GetScreenHeight() / 2.0f);
+			mouseLock = true;
+			break;
+		}
+		else if(MOUSERIGHT)
+		{
+			bis->ShowMouseCursor(true);
+			mouseLock = false;
 			break;
 		}
 		break;

@@ -11,6 +11,9 @@ BI3D::BI3D(string title, int width, int height)
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
 
 	if(!SDL_Init(SDL_INIT_VIDEO) < 0)
 		cerr << "Initialized SDL2 fail. : Error - " << SDL_GetError() << endl;
@@ -86,6 +89,8 @@ bool BI3D::Start()
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_MULTISAMPLE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
@@ -109,12 +114,6 @@ bool BI3D::Start()
 			case SDL_QUIT:
 				quit = true;
 				break;
-			case SDL_KEYDOWN:
-				if(e.key.keysym.sym == SDLK_ESCAPE)
-				{
-					quit = true;
-					break;
-				}
 			}
 		}
 
@@ -181,6 +180,15 @@ Mouse BI3D::GetMousePosition()
 	return mouseObject;
 }
 
+void BI3D::ShowMouseCursor(bool value)
+{
+	if(value)
+		SDL_ShowCursor(SDL_ENABLE);
+	else
+		SDL_ShowCursor(SDL_DISABLE);
+
+}
+
 GLfloat BI3D::Randomf(GLfloat min, GLfloat max)
 {
 	if(min < 0.0f | max < 0.0f)
@@ -190,6 +198,9 @@ GLfloat BI3D::Randomf(GLfloat min, GLfloat max)
 
 	return ran;
 }
+
+GLfloat BI3D::GetScreenWidth(){return width;}
+GLfloat BI3D::GetScreenHeight(){return height;}
 
 void BI3D::Close()
 {

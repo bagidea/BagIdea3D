@@ -75,36 +75,6 @@ void Camera::LookAt(GLfloat x, GLfloat y, GLfloat z)
 
 glm::mat4 Camera::GetTransform()
 {
-	if(rotationX >= 360.0f)
-		rotationX = 360.0f;
-	else if(rotationX <= -360.0f)
-		rotationX = -360.0f;
-
-	if(rotationY >= 360.0f)
-		rotationY = 360.0f;
-	else if(rotationY <= -360.0f)
-		rotationY = -360.0f;
-
-	if(rotationZ >= 360.0f)
-		rotationZ = 360.0f;
-	else if(rotationZ <= -360.0f)
-		rotationZ = -360.0f;
-	
-	if(rotationX >= 180.0f)
-		rotationX = -180.0f+(rotationX-180.0f);
-	else if(rotationX <= -180.0f)
-		rotationX = 180.0f+(rotationX+180.0f);
-
-	if(rotationY >= 180.0f)
-		rotationY = -180.0f+(rotationY-180.0f);
-	else if(rotationY <= -180.0f)
-		rotationY = 180.0f+(rotationY+180.0f);
-
-	if(rotationZ >= 180.0f)
-		rotationZ = -180.0f+(rotationZ-180.0f);
-	else if(rotationZ <= -180.0f)
-		rotationZ = 180.0f+(rotationZ+180.0f);
-
 	glm::mat4 trans;
 
 	glm::vec3 camPos(x, y, z);
@@ -118,3 +88,6 @@ glm::mat4 Camera::GetTransform()
 
 	return trans;
 }
+
+GLfloat Camera::GetNear(){return near;}
+GLfloat Camera::GetFar(){return far;}

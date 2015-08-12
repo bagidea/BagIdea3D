@@ -21,6 +21,13 @@
 #define Event SDL_Event
 #define KEYDOWN SDL_KEYDOWN
 #define KEYUP SDL_KEYUP
+#define KEYUP SDL_KEYUP
+
+#define MOUSEDOWN SDL_MOUSEBUTTONDOWN
+#define MOUSEUP SDL_MOUSEBUTTONUP
+#define MOUSELEFT SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)
+#define MOUSERIGHT SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)
+#define MOUSEMIDDLE SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_MIDDLE)
 
 using namespace std;
 
@@ -43,8 +50,12 @@ public:
 	void SetMouseInWindow(int x, int y);
 
 	Mouse GetMousePosition();
+	void ShowMouseCursor(bool value);
 
 	GLfloat Randomf(GLfloat min, GLfloat max);
+
+	GLfloat GetScreenWidth();
+	GLfloat GetScreenHeight();
 
 	void Close();
 private:

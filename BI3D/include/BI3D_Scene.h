@@ -10,17 +10,10 @@
 
 #include "BI3D_Camera.h"
 #include "BI3D_Material.h"
+#include "BI3D_Sprite2D.h"
 #include "BI3D_Object.h"
 
 using namespace std;
-
-struct Color
-{
-	GLfloat r, g, b, a;
-	Color();
-	Color(GLfloat r, GLfloat g, GLfloat b);
-	Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
-};
 
 struct Prefab
 {
@@ -103,7 +96,9 @@ public:
 	~Scene();
 
 	void AddChild(Object* object);
+	void AddChild(Sprite2D* sprite2D);
 	void DeleteChild(Object* object);
+	void DeleteChild(Sprite2D* sprite2D);
 
 	void AddMaterial(Material* material);
 	void DeleteMaterial(Material* material);
@@ -129,15 +124,16 @@ public:
 	void Update();
 
 	void SetScreen(GLfloat width, GLfloat height);
-	void SetGamma(GLfloat volume);
 private:
-	GLfloat gamma;
-
 	Camera* mainCamera;
 
 	vector<Prefab*> prefabList;
 	vector<Material*> materialList;
 	vector<Object*> objectList;
+
+	Material* sprite2DProgram;
+
+	vector<Sprite2D*> sprite2DList;
 
 	//Light
 	DirectionalLight* directionalLight;

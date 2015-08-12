@@ -1,5 +1,29 @@
 #include "BI3D_Object.h"
 
+Color::Color()
+{
+	r = 0.0f;
+	g = 0.0f;
+	b = 0.0f;
+	a = 1.0f;
+}
+
+Color::Color(GLfloat r, GLfloat g, GLfloat b)
+{
+	this->r = r;
+	this->g = g;
+	this->b = b;
+	this->a = 1.0f;
+}
+
+Color::Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	this->r = r;
+	this->g = g;
+	this->b = b;
+	this->a = a;
+}
+
 Object::Object()
 {
 	x = 0.0f;
@@ -45,8 +69,10 @@ Object::~Object()
 
 void Object::LoadTexture(string path, int type)
 {
+	int w, h;
+
 	Texture texture;
-	texture.id = LoadImage(path);
+	texture.id = LoadImage(path, w ,h);
 	texture.path = "";
 
 	if(type == BI3D_TEXTURE_DIFFUSE)
@@ -161,36 +187,6 @@ void Object::SetShininess(GLfloat shininess)
 void Object::Update(Camera* camera)
 {
 	glm::mat4 _model;
-
-	if(rotationX >= 360.0f)
-		rotationX = 360.0f;
-	else if(rotationX <= -360.0f)
-		rotationX = -360.0f;
-
-	if(rotationY >= 360.0f)
-		rotationY = 360.0f;
-	else if(rotationY <= -360.0f)
-		rotationY = -360.0f;
-
-	if(rotationZ >= 360.0f)
-		rotationZ = 360.0f;
-	else if(rotationZ <= -360.0f)
-		rotationZ = -360.0f;
-
-	if(rotationX >= 180.0f)
-		rotationX = -180.0f+(rotationX-180.0f);
-	else if(rotationX <= -180.0f)
-		rotationX = 180.0f+(rotationX+180.0f);
-
-	if(rotationY >= 180.0f)
-		rotationY = -180.0f+(rotationY-180.0f);
-	else if(rotationY <= -180.0f)
-		rotationY = 180.0f+(rotationY+180.0f);
-
-	if(rotationZ >= 180.0f)
-		rotationZ = -180.0f+(rotationZ-180.0f);
-	else if(rotationZ <= -180.0f)
-		rotationZ = 180.0f+(rotationZ+180.0f);
 
 	if(camera != NULL)
 	{
@@ -319,8 +315,10 @@ vector<Texture> Object::LoadMaterialTextures(aiMaterial* mat, aiTextureType type
 
 		if(!skip)
 		{
+			int x, y;
+
 			Texture texture;
-			texture.id = LoadImage(directory+"/"+str.C_Str());
+			texture.id = LoadImage(directory+"/"+str.C_Str(), x, y);
 			texture.type = typeName;
 			texture.path = str;
 			textures.push_back(texture);
@@ -331,7 +329,7 @@ vector<Texture> Object::LoadMaterialTextures(aiMaterial* mat, aiTextureType type
 	return textures;
 }
 
-unsigned int LoadImage(string path)
+unsigned int LoadImage(string path, int& w_, int& h_)
 {
 	SDL_Surface* img = IMG_Load(path.c_str());
 	unsigned int id;
@@ -373,6 +371,9 @@ unsigned int LoadImage(string path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, formatTexture, img->w, img->h, 0, formatTexture, GL_UNSIGNED_BYTE, img->pixels);
+
+		w_ = img->w;
+		h_ = img->h;
 
 		SDL_FreeSurface(img);
 		img = NULL;
