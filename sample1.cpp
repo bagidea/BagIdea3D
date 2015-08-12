@@ -10,6 +10,9 @@ Object* model;
 
 Sprite2D* howTo;
 Sprite2D* logo;
+Sprite2D* frameScreen;
+
+FrameBuffer* frameBuffer;
 
 bool upK, downK, leftK, rightK;
 
@@ -88,6 +91,21 @@ void Start()
 
 	scene->AddChild(logo);
 
+	//FrameBuffer
+	frameScreen = new Sprite2D();
+
+	frameScreen->FlipVertical = true;
+	frameScreen->x = bis->GetScreenWidth() - 300.0f;
+	frameScreen->width = 300.0f;
+	frameScreen->height = 225.0f;
+
+	scene->AddChild(frameScreen);
+
+	frameBuffer = new FrameBuffer(bis->GetScreenWidth(), bis->GetScreenHeight());
+
+	scene->AddFrameBuffer(frameBuffer);
+	//scene->DeleteFrameBuffer(frameBuffer);
+
 	bis->AddScene(scene);
 	//bis->DeleteScene(scene);
 
@@ -132,6 +150,8 @@ void Update()
 
 	//model->rotationY += 2.0f;
 	model->LookAt(camera->x, camera->y, camera->z);
+
+	frameScreen->SetTexture(frameBuffer->GetTexture());
 }
 
 void Input(Event num)

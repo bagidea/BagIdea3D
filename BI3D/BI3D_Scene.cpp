@@ -214,6 +214,17 @@ Scene::~Scene()
 
 	sprite2DList.clear();
 
+	for(GLint i = 0; i < frameBufferList.size(); i++)
+	{
+		if(frameBufferList[i] != NULL)
+		{
+			delete frameBufferList[i];
+			frameBufferList[i] = NULL;
+		}
+	}
+
+	frameBufferList.clear();
+
 	for(GLint i = 0; i < materialList.size(); i++)
 	{
 		if(materialList[i] != NULL)
@@ -294,6 +305,28 @@ void Scene::DeleteChild(Sprite2D* sprite2D)
 			{
 				delete sprite2DList[i];
 				sprite2DList[i] = NULL;
+			}
+
+			sprite2DList.erase(sprite2DList.begin()+i);
+		}
+	}
+}
+
+void Scene::AddFrameBuffer(FrameBuffer* frameBuffer)
+{
+	frameBufferList.push_back(frameBuffer);
+}
+
+void Scene::DeleteFrameBuffer(FrameBuffer* frameBuffer)
+{
+	for(GLint i = 0; i < frameBufferList.size(); i++)
+	{
+		if(frameBufferList[i] == frameBuffer)
+		{
+			if(frameBufferList[i] != NULL)
+			{
+				delete frameBufferList[i];
+				frameBufferList[i] = NULL;
 			}
 
 			sprite2DList.erase(sprite2DList.begin()+i);
@@ -451,10 +484,9 @@ void Scene::ClearCamera()
 	}
 }
 
-void Scene::Update()
+void Scene::Update(Color bgColor)
 {
 	glm::mat4 _projection;
-	glm::mat4 _projection2D;
 	glm::mat4 _view;
 	
 	GLfloat near_ = 0.0f;
@@ -469,6 +501,39 @@ void Scene::Update()
 
 	_projection = glm::perspective(45.0f, (GLfloat)(screenWidth)/(GLfloat)(screenHeight), near_, far_);
 
+	for(GLint i = 0; i < frameBufferList.size(); i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBufferList[i]->GetFrameBuffer());
+
+		glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+
+		Render(_projection, _view, near_, far_);
+
+		frameBufferList[i]->Bind();
+	}
+	
+	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
+	Render(_projection, _view, near_, far_);
+
+	_projection = glm::ortho(0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight), 0.0f, -1.0f, 1.0f);
+
+	sprite2DProgram->Bind();
+
+	glUniformMatrix4fv(sprite2DProgram->gProjection, 1, GL_FALSE, glm::value_ptr(_projection));
+
+	for(GLint i = 0; i < sprite2DList.size(); i++)
+	{
+		sprite2DList[i]->Update(sprite2DProgram);
+	}
+}
+
+void Scene::Render(glm::mat4 _projection, glm::mat4 _view, GLfloat near, GLfloat far)
+{
 	for(GLint i = 0; i < materialList.size(); i++)
 	{
 		materialList[i]->Bind();
@@ -547,17 +612,6 @@ void Scene::Update()
 			if(objectList[a]->GetMaterial() == materialList[i])
 				objectList[a]->Update(mainCamera);
 		}
-	}
-
-	_projection = glm::ortho(0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight), 0.0f, -1.0f, 1.0f);
-
-	sprite2DProgram->Bind();
-
-	glUniformMatrix4fv(sprite2DProgram->gProjection, 1, GL_FALSE, glm::value_ptr(_projection));
-
-	for(GLint i = 0; i < sprite2DList.size(); i++)
-	{
-			sprite2DList[i]->Update(sprite2DProgram);
 	}
 }
 

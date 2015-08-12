@@ -2,6 +2,8 @@
 
 Sprite2D::Sprite2D()
 {
+    FlipVertical = false;
+
 	x = 0.0f;
 	y = 0.0f;
 	rotation = 0.0f;
@@ -23,6 +25,11 @@ void Sprite2D::Load(string path)
 	height = (GLfloat)h;
 }
 
+void Sprite2D::SetTexture(unsigned int tex)
+{
+    this->tex = tex;
+}
+
 void Sprite2D::Update(Material* material)
 {
 	glm::mat4 model;
@@ -39,9 +46,10 @@ void Sprite2D::Update(Material* material)
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	glUniformMatrix4fv(material->gModel, 1, GL_FALSE, glm::value_ptr(model));
+    
 	glUniform1i(glGetUniformLocation(material->program, "image"), 0);
-
 	glUniform4f(glGetUniformLocation(material->program, "baseColor"), color.r, color.g, color.b, color.a);
+    glUniform1i(glGetUniformLocation(material->program, "flipVertical"), FlipVertical);
 
 	glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

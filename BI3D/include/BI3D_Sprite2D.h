@@ -20,9 +20,12 @@ public:
 	GLfloat x, y, rotation, width, height;
 	Color color;
 
+	GLboolean FlipVertical;
+
 	Sprite2D();
 
 	void Load(string path);
+	void SetTexture(unsigned int tex);
 	void Update(Material* material);
 private:
 	GLuint VAO, VBO;

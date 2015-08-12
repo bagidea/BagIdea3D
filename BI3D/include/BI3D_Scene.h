@@ -11,6 +11,7 @@
 #include "BI3D_Camera.h"
 #include "BI3D_Material.h"
 #include "BI3D_Sprite2D.h"
+#include "BI3D_FrameBuffer.h"
 #include "BI3D_Object.h"
 
 using namespace std;
@@ -100,6 +101,9 @@ public:
 	void DeleteChild(Object* object);
 	void DeleteChild(Sprite2D* sprite2D);
 
+	void AddFrameBuffer(FrameBuffer* frameBuffer);
+	void DeleteFrameBuffer(FrameBuffer* frameBuffer);
+
 	void AddMaterial(Material* material);
 	void DeleteMaterial(Material* material);
 	void CreatePrefab(Object* object, string name);
@@ -121,7 +125,7 @@ public:
 	void SetCamera(Camera* camera);
 	void ClearCamera();
 
-	void Update();
+	void Update(Color bgColor);
 
 	void SetScreen(GLfloat width, GLfloat height);
 private:
@@ -134,6 +138,7 @@ private:
 	Material* sprite2DProgram;
 
 	vector<Sprite2D*> sprite2DList;
+	vector<FrameBuffer*> frameBufferList;
 
 	//Light
 	DirectionalLight* directionalLight;
@@ -144,6 +149,8 @@ private:
 
 	//Screen Resolution
 	int screenWidth, screenHeight;
+
+	void Render(glm::mat4 _projection, glm::mat4 _view, GLfloat near, GLfloat far);
 };
 
 #endif

@@ -88,7 +88,7 @@ bool BI3D::Start()
 		SDL_GL_SetSwapInterval(1);
 	}
 
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_MULTISAMPLE);
@@ -97,7 +97,7 @@ bool BI3D::Start()
 	glFrontFace(GL_CW); 
 	//glEnable(GL_FRAMEBUFFER_SRGB);
 
-	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+	//glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
 	if(StartEvent != NULL)
 		StartEvent();
@@ -117,13 +117,13 @@ bool BI3D::Start()
 			}
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if(UpdateEvent != NULL)
 			UpdateEvent();
 
 		for(GLint i = 0; i < sceneList.size(); i++)
-			sceneList[i]->Update();
+			sceneList[i]->Update(bgColor);
 
 		SDL_GL_SwapWindow(window);
 	}
