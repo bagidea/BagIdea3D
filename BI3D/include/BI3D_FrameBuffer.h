@@ -10,7 +10,7 @@ using namespace std;
 class FrameBuffer
 {
 public:
-	FrameBuffer(int width, int height);
+	FrameBuffer(int width, int height, GLboolean depth = false, GLboolean stencil = false);
 	~FrameBuffer();
 
 	void Bind();

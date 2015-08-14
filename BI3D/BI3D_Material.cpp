@@ -40,6 +40,8 @@ Material::Material(string vertexShaderPath, string fragmentShaderPath, int type)
 	gDirectionalLight_Diffuse = glGetUniformLocation(program, "directionalLight.diffuse");
 	gDirectionalLight_Specular = glGetUniformLocation(program, "directionalLight.specular");
 
+	gShadowMap = glGetUniformLocation(program, "lightSpace");
+
 	gPointLight_Count = glGetUniformLocation(program, "countPointLight");
 	gSpotLight_Count = glGetUniformLocation(program, "countSpotLight");
 

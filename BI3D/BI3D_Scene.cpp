@@ -151,11 +151,15 @@ void SpotLight::SetSpecular(Color color)
 
 Scene::Scene()
 {
+	supportShadowMap = false;
+
 	mainCamera = NULL;
 	screenWidth = 0.0f;
 	screenHeight = 0.0f;
 
-	directionalLight = new DirectionalLight(glm::vec3(3.0f, -1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	directionalLight = new DirectionalLight(glm::vec3(3.0f, -5.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	shadowMap = new ShadowMap(1024.0f, 1024.0f);
+
 	maxPointLight = 4;
 	maxSpotLight = 4;
 
@@ -169,6 +173,9 @@ Scene::~Scene()
 		delete directionalLight;
 		directionalLight = NULL;
 	}
+
+	delete shadowMap;
+	shadowMap = NULL;
 
 	for(GLint i = 0; i < pointLight.size(); i++)
 	{
@@ -488,9 +495,37 @@ void Scene::Update(Color bgColor)
 {
 	glm::mat4 _projection;
 	glm::mat4 _view;
+
+	_lightSpace = glm::mat4();
 	
 	GLfloat near_ = 0.0f;
 	GLfloat far_ = 0.0f;
+
+	//ShadowMap//
+	if(supportShadowMap)
+	{
+		_projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
+		_view = glm::lookAt(glm::vec3(directionalLight->direction.x, -directionalLight->direction.y, -directionalLight->direction.z), glm::vec3(0.0f), glm::vec3(1.0));
+
+		_lightSpace = _projection * _view;
+
+		glViewport(0, 0, 1024.0f, 1024.0f);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMap->GetFrameBuffer());
+
+		glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+
+		glCullFace(GL_BACK);
+		Render(_projection, _view);
+
+		shadowMap->Bind();
+	}
+	/////////////
+
+	glCullFace(GL_FRONT);
+	glViewport(0, 0, screenWidth, screenHeight);
 
 	if(mainCamera != NULL)
 	{
@@ -509,7 +544,7 @@ void Scene::Update(Color bgColor)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
-		Render(_projection, _view, near_, far_);
+		Render(_projection, _view);
 
 		frameBufferList[i]->Bind();
 	}
@@ -518,9 +553,9 @@ void Scene::Update(Color bgColor)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 
-	Render(_projection, _view, near_, far_);
+	Render(_projection, _view);
 
-	_projection = glm::ortho(0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight), 0.0f, -1.0f, 1.0f);
+	_projection = glm::ortho(0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight), 0.0f, -0.0f, 1.0f);
 
 	sprite2DProgram->Bind();
 
@@ -532,7 +567,7 @@ void Scene::Update(Color bgColor)
 	}
 }
 
-void Scene::Render(glm::mat4 _projection, glm::mat4 _view, GLfloat near, GLfloat far)
+void Scene::Render(glm::mat4 _projection, glm::mat4 _view)
 {
 	for(GLint i = 0; i < materialList.size(); i++)
 	{
@@ -540,7 +575,7 @@ void Scene::Render(glm::mat4 _projection, glm::mat4 _view, GLfloat near, GLfloat
 
 		if(materialList[i]->GetType() == BI3D_SUPPORT_LIGHT || materialList[i]->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)
 		{
-			glUniform3f(materialList[i]->gDirectionalLight_Direction, directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
+			glUniform3f(materialList[i]->gDirectionalLight_Direction, -directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
 			glUniform3f(materialList[i]->gDirectionalLight_Ambient, directionalLight->ambient.x, directionalLight->ambient.y, directionalLight->ambient.z);
 			glUniform3f(materialList[i]->gDirectionalLight_Diffuse, directionalLight->diffuse.x*directionalLight->intensity, directionalLight->diffuse.y*directionalLight->intensity, directionalLight->diffuse.z*directionalLight->intensity);
 			glUniform3f(materialList[i]->gDirectionalLight_Specular, directionalLight->specular.x*directionalLight->intensity, directionalLight->specular.y*directionalLight->intensity, directionalLight->specular.z*directionalLight->intensity);
@@ -606,11 +641,12 @@ void Scene::Render(glm::mat4 _projection, glm::mat4 _view, GLfloat near, GLfloat
 
 		glUniformMatrix4fv(materialList[i]->gProjection, 1, GL_FALSE, glm::value_ptr(_projection));
 		glUniformMatrix4fv(materialList[i]->gView, 1, GL_FALSE, glm::value_ptr(_view));
+		glUniformMatrix4fv(materialList[i]->gShadowMap, 1, GL_FALSE, glm::value_ptr(_lightSpace));
 
 		for(GLint a = 0; a < objectList.size(); a++)
 		{
 			if(objectList[a]->GetMaterial() == materialList[i])
-				objectList[a]->Update(mainCamera);
+				objectList[a]->Update(mainCamera, shadowMap);
 		}
 	}
 }

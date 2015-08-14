@@ -88,7 +88,7 @@ bool BI3D::Start()
 		SDL_GL_SetSwapInterval(1);
 	}
 
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_MULTISAMPLE);
@@ -97,7 +97,7 @@ bool BI3D::Start()
 	glFrontFace(GL_CW); 
 	//glEnable(GL_FRAMEBUFFER_SRGB);
 
-	//glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
 	if(StartEvent != NULL)
 		StartEvent();

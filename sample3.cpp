@@ -7,6 +7,8 @@ BI3D* bis;
 Scene* scene;
 Camera* camera;
 Object* plane;
+Object* model;
+Object* model2;
 
 PointLight* pl1;
 PointLight* pl2;
@@ -34,7 +36,7 @@ void Start()
 	scene = new Scene();
 
 	//SupportShadowMap
-	scene->supportShadowMap = true;
+	//scene->supportShadowMap = true;
 
 	camera = new Camera(45.0f, 0.1f, 500.0f);
 
@@ -57,55 +59,37 @@ void Start()
 
 	scene->AddChild(plane);
 
-	Object* ob = new Object();
-	ob->Load("source/model/nanosuit/nanosuit.obj");
-	ob->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
+	model = new Object();
+	model->Load("source/model/nanosuit/nanosuit.obj");
+	model->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
 
-	ob->scaleX = 0.2f;
-	ob->scaleY = 0.2f;
-	ob->scaleZ = 0.2f;
+	model->x = -3.0f;
+	model->rotationY = 180.0f;
+	model->scaleX = 0.2f;
+	model->scaleY = 0.2f;
+	model->scaleZ = 0.2f;
 
-	scene->CreatePrefab(ob, "model1");
+	scene->AddChild(model);
+	//scene->DeleteChild(model);
 
-	for(int i = 0; i < 10; i++)
-	{
-		Object* ob_ = new Object();
-		ob_->LoadPrefab(scene->GetPrefab("model1"));
+	model2 = new Object();
+	model2->LoadTexture("source/model/res/Imrod_Diffuse.png", BI3D_TEXTURE_DIFFUSE);
+	model2->LoadTexture("source/model/res/Imrod_spec.png", BI3D_TEXTURE_SPECULAR);
+	model2->LoadTexture("source/model/res/Imrod_norm.png", BI3D_TEXTURE_NORMAL);
+	model2->Load("source/model/res/ImrodLowPoly.obj");
+	model2->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
 
-		ob_->x = bis->Randomf(0.0f, 20.0f)-10.0f;
-		ob_->z = bis->Randomf(0.0f, 20.0f)-10.0f;
-		ob_->rotationY = bis->Randomf(0.0f, 360.0f)-180.0f;
+	model2->x = 3.0f;
+	model2->rotationY = 180.0f;
+	model2->scaleX = 0.1f;
+	model2->scaleY = 0.1f;
+	model2->scaleZ = 0.1f;
 
-		scene->AddChild(ob_);
-	}
-
-	Object* ob2 = new Object();
-	ob2->LoadTexture("source/model/res/Imrod_Diffuse.png", BI3D_TEXTURE_DIFFUSE);
-	ob2->LoadTexture("source/model/res/Imrod_spec.png", BI3D_TEXTURE_SPECULAR);
-	ob2->LoadTexture("source/model/res/Imrod_norm.png", BI3D_TEXTURE_NORMAL);
-	ob2->Load("source/model/res/ImrodLowPoly.obj");
-	ob2->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
-
-	ob2->scaleX = 0.1f;
-	ob2->scaleY = 0.1f;
-	ob2->scaleZ = 0.1f;
-
-	scene->CreatePrefab(ob2, "model2");
-
-	for(int i = 0; i < 10; i++)
-	{
-		Object* ob_ = new Object();
-		ob_->LoadPrefab(scene->GetPrefab("model2"));
-
-		ob_->x = bis->Randomf(0.0f, 20.0f)-10.0f;
-		ob_->z = bis->Randomf(0.0f, 20.0f)-10.0f;
-		ob_->rotationY = bis->Randomf(0.0f, 360.0f)-180.0f;
-
-		scene->AddChild(ob_);
-	}
+	scene->AddChild(model2);
+	//scene->DeleteChild(model2);
 
 	//DirectionalLight
-	//scene->SetDirectionalLightDirection(1.0f, -3.0f, 1.0f);
+	//scene->SetDirectionalLightDirection(3.0f, -1.0f, 5.0f);
 	//scene->SetDirectionalLightAmbient(Color(0.0f, 0.0f, 0.0f));
 	//scene->SetDirectionalLightColor(Color(1.0f, 1.0f, 1.0f));
 	//scene->SetDirectionalLightSpecular(Color(1.0f, 1.0f, 1.0f));
@@ -195,6 +179,10 @@ void Update()
 		CameraRotate();
 		CameraMove();
 	}
+
+	//plane->rotationY += 0.1f;
+	model->rotationY += 1.0f;
+	model2->rotationY += 1.0f;
 
 	sl->x = camera->x;
 	sl->y = camera->y;

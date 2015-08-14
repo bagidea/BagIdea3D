@@ -15,6 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "BI3D_Material.h"
+#include "BI3D_ShadowMap.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ public:
 
 	Mesh(vector<Vertex> vec, vector<GLuint> ind, vector<Texture> tex);
 
-	void Update(Material* material);
+	void Update(Material* material, ShadowMap* shadowMap);
 private:
 	GLuint VAO, VBO, EBO;
 

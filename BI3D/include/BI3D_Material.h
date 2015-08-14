@@ -23,7 +23,7 @@ public:
 	GLuint gShininess, gViewPos;
 	GLuint gProjection, gView, gModel;
 
-	GLuint gDirectionalLight_Direction, gDirectionalLight_Ambient, gDirectionalLight_Diffuse, gDirectionalLight_Specular;
+	GLuint gDirectionalLight_Direction, gDirectionalLight_Ambient, gDirectionalLight_Diffuse, gDirectionalLight_Specular, gShadowMap;
 	GLuint gPointLight_Count, gSpotLight_Count;
 
 	Material(string vertexShaderPath, string fragmentShaderPath, int type);

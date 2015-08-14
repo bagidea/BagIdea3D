@@ -9,11 +9,13 @@ Mesh::Mesh(vector<Vertex> vec, vector<GLuint> ind, vector<Texture> tex)
 	SetupMesh();
 }
 
-void Mesh::Update(Material* material)
+void Mesh::Update(Material* material, ShadowMap* shadowMap)
 {
 	GLuint diffuseNr = 1;
 	GLuint specularNr = 1;
 	GLuint normalNr = 1;
+
+	GLuint tempTex = 0;
 
 	for(GLuint i = 0; i < textures.size(); i++)
 	{
@@ -42,10 +44,21 @@ void Mesh::Update(Material* material)
 
 		if(material->GetType() == BI3D_DEFAULT)		
 			glUniform1i(glGetUniformLocation(material->program, (name+number).c_str()), i);
-		else if(material->GetType() == BI3D_SUPPORT_LIGHT || material->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)	
+		else if(material->GetType() == BI3D_SUPPORT_LIGHT || material->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)
 			glUniform1i(glGetUniformLocation(material->program, ("material."+name+number).c_str()), i);
 
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+
+		tempTex = i+1;
+	}
+
+	//ShadowMap
+	if(material->GetType() == BI3D_SUPPORT_LIGHT || material->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)
+	{
+		glActiveTexture(GL_TEXTURE0+tempTex);
+		glUniform1i(glGetUniformLocation(material->program, "material.texture_shadowMap1"), tempTex);
+		glBindTexture(GL_TEXTURE_2D, shadowMap->GetTexture());
+
 	}
 
 	glUniform1f(material->gShininess, material->shininess);

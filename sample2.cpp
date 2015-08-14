@@ -34,6 +34,9 @@ void Start()
 
 	scene = new Scene();
 
+	//SupportShadowMap
+	//scene->supportShadowMap = true;
+
 	camera = new Camera(45.0f, 0.1f, 500.0f);
 
 	camera->y = 5.0f;

@@ -12,6 +12,7 @@
 #include "BI3D_Material.h"
 #include "BI3D_Sprite2D.h"
 #include "BI3D_FrameBuffer.h"
+#include "BI3D_ShadowMap.h"
 #include "BI3D_Object.h"
 
 using namespace std;
@@ -93,6 +94,8 @@ struct SpotLight
 class Scene
 {
 public:
+	bool supportShadowMap;
+
 	Scene();
 	~Scene();
 
@@ -147,10 +150,13 @@ private:
 	GLint maxSpotLight;
 	vector<SpotLight*> spotLight;
 
+	glm::mat4 _lightSpace;
+	ShadowMap* shadowMap;
+
 	//Screen Resolution
 	int screenWidth, screenHeight;
 
-	void Render(glm::mat4 _projection, glm::mat4 _view, GLfloat near, GLfloat far);
+	void Render(glm::mat4 _projection, glm::mat4 _view);
 };
 
 #endif

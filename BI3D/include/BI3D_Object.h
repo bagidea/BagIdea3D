@@ -17,6 +17,7 @@
 
 #include "BI3D_Camera.h"
 #include "BI3D_Material.h"
+#include "BI3D_ShadowMap.h"
 #include "BI3D_Mesh.h"
 
 #define MATH_PI 3.14159265359f
@@ -51,7 +52,7 @@ public:
 	void SetMaterialMode(int mode);
 	void SetShininess(GLfloat shininess);
 
-	void Update(Camera* camera);
+	void Update(Camera* camera, ShadowMap* shadowMap);
 
 	Material* GetMaterial();
 	vector<Mesh*> GetMesh();

@@ -184,7 +184,7 @@ void Object::SetShininess(GLfloat shininess)
 	material->shininess = shininess;
 }
 
-void Object::Update(Camera* camera)
+void Object::Update(Camera* camera, ShadowMap* shadowMap)
 {
 	glm::mat4 _model;
 
@@ -201,7 +201,7 @@ void Object::Update(Camera* camera)
 		glUniformMatrix4fv(material->gModel, 1, GL_FALSE, glm::value_ptr(_model));
 
 		for(GLint i = 0; i < meshList.size(); i++)
-			meshList[i]->Update(material);
+			meshList[i]->Update(material, shadowMap);
 	}
 }
 
