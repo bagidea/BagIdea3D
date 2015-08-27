@@ -91,10 +91,10 @@ float ShadowCalculation(vec4 fragPosLightSpace, DirectionalLight light)
             shadow += currentDepth - bias > pcfDepth  ? 1.0f : 0.0f;        
         }    
     }
-    shadow /= 9.0;
+    shadow /= 9.0f;
   
-    if(projCoords.z > 1.0)
-        shadow = 0.0;
+    if(projCoords.z > 1.0f)
+        shadow = 0.0f;
 
     return shadow;
 }

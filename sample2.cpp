@@ -8,6 +8,7 @@ Scene* scene;
 Camera* camera;
 Object* plane;
 Object* model;
+Object* model2;
 
 PointLight* pl1;
 PointLight* pl2;
@@ -35,7 +36,7 @@ void Start()
 	scene = new Scene();
 
 	//SupportShadowMap
-	//scene->supportShadowMap = true;
+	scene->supportShadowMap = true;
 
 	camera = new Camera(45.0f, 0.1f, 500.0f);
 
@@ -48,9 +49,10 @@ void Start()
 	plane = new Object();
 	plane->LoadTexture("source/model/plane.jpg", BI3D_TEXTURE_DIFFUSE);
 	plane->LoadTexture("source/model/planeSpec.jpg", BI3D_TEXTURE_SPECULAR);
+	plane->LoadTexture("source/model/planeNorm.jpg", BI3D_TEXTURE_NORMAL);
 	plane->Load("source/model/plane.obj");
-	plane->SetMaterialMode(BI3D_SUPPORT_LIGHT);
-	plane->SetShininess(128.0f);
+	plane->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
+	//plane->SetShininess(512.0f);
 
 	plane->scaleX = 10.0f;
 	plane->scaleZ = 10.0f;
@@ -59,8 +61,9 @@ void Start()
 
 	model = new Object();
 	model->Load("source/model/nanosuit/nanosuit.obj");
-	model->SetMaterialMode(BI3D_SUPPORT_LIGHT);
+	model->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
 
+	model->x = -3.0f;
 	model->rotationY = 180.0f;
 	model->scaleX = 0.2f;
 	model->scaleY = 0.2f;
@@ -69,10 +72,28 @@ void Start()
 	scene->AddChild(model);
 	//scene->DeleteChild(model);
 
+	model2 = new Object();
+	model2->LoadTexture("source/model/res/Imrod_Diffuse.png", BI3D_TEXTURE_DIFFUSE);
+	model2->LoadTexture("source/model/res/Imrod_spec.png", BI3D_TEXTURE_SPECULAR);
+	model2->LoadTexture("source/model/res/Imrod_norm.png", BI3D_TEXTURE_NORMAL);
+	model2->Load("source/model/res/ImrodLowPoly.obj");
+	model2->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
+
+	model2->x = 3.0f;
+	model2->rotationY = 180.0f;
+	model2->scaleX = 0.1f;
+	model2->scaleY = 0.1f;
+	model2->scaleZ = 0.1f;
+
+	scene->AddChild(model2);
+	//scene->DeleteChild(model2);
+
 	//DirectionalLight
 	//scene->SetDirectionalLightDirection(3.0f, -1.0f, 5.0f);
-	scene->SetDirectionalLightColor(Color(1.0f, 1.0f, 1.0f));
-	scene->SetDirectionalLightSpecular(Color(0.5f, 0.5f, 0.5f));
+	//scene->SetDirectionalLightAmbient(Color(0.0f, 0.0f, 0.0f));
+	//scene->SetDirectionalLightColor(Color(1.0f, 1.0f, 1.0f));
+	//scene->SetDirectionalLightSpecular(Color(1.0f, 1.0f, 1.0f));
+	//scene->SetDirectionalLightIntensity(5.0f);
 
 	//PointLight
 	pl1 = new PointLight(-5.0f, 2.0f, 5.0f);
@@ -158,6 +179,10 @@ void Update()
 		CameraRotate();
 		CameraMove();
 	}
+
+	//plane->rotationY += 0.1f;
+	model->rotationY += 1.0f;
+	model2->rotationY += 1.0f;
 
 	sl->x = camera->x;
 	sl->y = camera->y;

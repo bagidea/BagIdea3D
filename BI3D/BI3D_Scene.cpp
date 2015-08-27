@@ -158,7 +158,7 @@ Scene::Scene()
 	screenHeight = 0.0f;
 
 	directionalLight = new DirectionalLight(glm::vec3(3.0f, -5.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-	shadowMap = new ShadowMap(1024.0f, 1024.0f);
+	shadowMap = new ShadowMap(512.0f, 512.0f);
 
 	maxPointLight = 4;
 	maxSpotLight = 4;
@@ -509,7 +509,7 @@ void Scene::Update(Color bgColor)
 
 		_lightSpace = _projection * _view;
 
-		glViewport(0, 0, 1024.0f, 1024.0f);
+		glViewport(0, 0, 512.0f, 512.0f);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, shadowMap->GetFrameBuffer());
 
@@ -518,7 +518,7 @@ void Scene::Update(Color bgColor)
 		glEnable(GL_DEPTH_TEST);
 
 		glCullFace(GL_BACK);
-		Render(_projection, _view);
+		Render(_projection, _view, true);
 
 		shadowMap->Bind();
 	}
@@ -567,76 +567,79 @@ void Scene::Update(Color bgColor)
 	}
 }
 
-void Scene::Render(glm::mat4 _projection, glm::mat4 _view)
+void Scene::Render(glm::mat4 _projection, glm::mat4 _view, GLboolean depth)
 {
 	for(GLint i = 0; i < materialList.size(); i++)
 	{
 		materialList[i]->Bind();
 
-		if(materialList[i]->GetType() == BI3D_SUPPORT_LIGHT || materialList[i]->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)
+		if(!depth)
 		{
-			glUniform3f(materialList[i]->gDirectionalLight_Direction, -directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
-			glUniform3f(materialList[i]->gDirectionalLight_Ambient, directionalLight->ambient.x, directionalLight->ambient.y, directionalLight->ambient.z);
-			glUniform3f(materialList[i]->gDirectionalLight_Diffuse, directionalLight->diffuse.x*directionalLight->intensity, directionalLight->diffuse.y*directionalLight->intensity, directionalLight->diffuse.z*directionalLight->intensity);
-			glUniform3f(materialList[i]->gDirectionalLight_Specular, directionalLight->specular.x*directionalLight->intensity, directionalLight->specular.y*directionalLight->intensity, directionalLight->specular.z*directionalLight->intensity);
-
-			if(pointLight.size() < maxPointLight)
-				glUniform1i(materialList[i]->gPointLight_Count, pointLight.size());
-			else
-				glUniform1i(materialList[i]->gPointLight_Count, maxPointLight);
-
-			for(GLint a = 0; a < pointLight.size(); a++)
+			if(materialList[i]->GetType() == BI3D_SUPPORT_LIGHT || materialList[i]->GetType() == BI3D_SUPPORT_LIGHT_AND_NORMALMAP)
 			{
-				ostringstream ss;
-				ss << "pointLights[" << a << "]";
-				string str = ss.str();
+				glUniform3f(materialList[i]->gDirectionalLight_Direction, -directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
+				glUniform3f(materialList[i]->gDirectionalLight_Ambient, directionalLight->ambient.x, directionalLight->ambient.y, directionalLight->ambient.z);
+				glUniform3f(materialList[i]->gDirectionalLight_Diffuse, directionalLight->diffuse.x*directionalLight->intensity, directionalLight->diffuse.y*directionalLight->intensity, directionalLight->diffuse.z*directionalLight->intensity);
+				glUniform3f(materialList[i]->gDirectionalLight_Specular, directionalLight->specular.x*directionalLight->intensity, directionalLight->specular.y*directionalLight->intensity, directionalLight->specular.z*directionalLight->intensity);
 
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".position").c_str()), -pointLight[a]->x, pointLight[a]->y, pointLight[a]->z);
+				if(pointLight.size() < maxPointLight)
+					glUniform1i(materialList[i]->gPointLight_Count, pointLight.size());
+				else
+					glUniform1i(materialList[i]->gPointLight_Count, maxPointLight);
 
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".constant").c_str()), pointLight[a]->constant);
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".linear").c_str()), pointLight[a]->linear);
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".quadratic").c_str()), pointLight[a]->quadratic);
+				for(GLint a = 0; a < pointLight.size(); a++)
+				{
+					ostringstream ss;
+					ss << "pointLights[" << a << "]";
+					string str = ss.str();
 
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), pointLight[a]->ambient.x, pointLight[a]->ambient.y, pointLight[a]->ambient.z);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), pointLight[a]->diffuse.x*pointLight[a]->intensity, pointLight[a]->diffuse.y*pointLight[a]->intensity, pointLight[a]->diffuse.z*pointLight[a]->intensity);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), pointLight[a]->specular.x*pointLight[a]->intensity, pointLight[a]->specular.y*pointLight[a]->intensity, pointLight[a]->specular.z*pointLight[a]->intensity);
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".position").c_str()), -pointLight[a]->x, pointLight[a]->y, pointLight[a]->z);
 
-				if(a >= maxPointLight-1)
-					break;
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".constant").c_str()), pointLight[a]->constant);
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".linear").c_str()), pointLight[a]->linear);
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".quadratic").c_str()), pointLight[a]->quadratic);
+
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), pointLight[a]->ambient.x, pointLight[a]->ambient.y, pointLight[a]->ambient.z);
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), pointLight[a]->diffuse.x*pointLight[a]->intensity, pointLight[a]->diffuse.y*pointLight[a]->intensity, pointLight[a]->diffuse.z*pointLight[a]->intensity);
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), pointLight[a]->specular.x*pointLight[a]->intensity, pointLight[a]->specular.y*pointLight[a]->intensity, pointLight[a]->specular.z*pointLight[a]->intensity);
+
+					if(a >= maxPointLight-1)
+						break;
+				}
+
+				if(spotLight.size() < maxSpotLight)
+					glUniform1i(materialList[i]->gSpotLight_Count, spotLight.size());
+				else
+					glUniform1i(materialList[i]->gSpotLight_Count, maxSpotLight);
+
+				for(GLint a = 0; a < spotLight.size(); a++)
+				{
+					ostringstream ss;
+					ss << "spotLights[" << a << "]";
+					string str = ss.str();
+
+					spotLight[a]->direction = glm::vec3(cosf(-spotLight[a]->rotationX*(MATH_PI/180.0f)) * sinf(-spotLight[a]->rotationY*(MATH_PI/180.0f)), sinf(-spotLight[a]->rotationX*(MATH_PI/180.0f)), cosf(-spotLight[a]->rotationX*(MATH_PI/180.0f)) * cosf(-spotLight[a]->rotationY*(MATH_PI/180.0f)));
+
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".position").c_str()), spotLight[a]->x, spotLight[a]->y, spotLight[a]->z);
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".direction").c_str()), spotLight[a]->direction.x, spotLight[a]->direction.y, spotLight[a]->direction.z);
+
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".constant").c_str()), spotLight[a]->constant);
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".linear").c_str()), spotLight[a]->linear);
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".quadratic").c_str()), spotLight[a]->quadratic);
+
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".cutOff").c_str()), glm::cos(glm::radians(spotLight[a]->cutOff)));
+					glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".outerCutOff").c_str()), glm::cos(glm::radians(spotLight[a]->outerCutOff)));
+
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), spotLight[a]->ambient.x, spotLight[a]->ambient.y, spotLight[a]->ambient.z);
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), spotLight[a]->diffuse.x*spotLight[a]->intensity, spotLight[a]->diffuse.y*spotLight[a]->intensity, spotLight[a]->diffuse.z*spotLight[a]->intensity);
+					glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), spotLight[a]->specular.x*spotLight[a]->intensity, spotLight[a]->specular.y*spotLight[a]->intensity, spotLight[a]->specular.z*spotLight[a]->intensity);
+
+					if(a >= maxSpotLight-1)
+						break;
+				}
+
+				glUniform3f(materialList[i]->gViewPos, mainCamera->x, mainCamera->y, mainCamera->z);
 			}
-
-			if(spotLight.size() < maxSpotLight)
-				glUniform1i(materialList[i]->gSpotLight_Count, spotLight.size());
-			else
-				glUniform1i(materialList[i]->gSpotLight_Count, maxSpotLight);
-
-			for(GLint a = 0; a < spotLight.size(); a++)
-			{
-				ostringstream ss;
-				ss << "spotLights[" << a << "]";
-				string str = ss.str();
-
-				spotLight[a]->direction = glm::vec3(cosf(-spotLight[a]->rotationX*(MATH_PI/180.0f)) * sinf(-spotLight[a]->rotationY*(MATH_PI/180.0f)), sinf(-spotLight[a]->rotationX*(MATH_PI/180.0f)), cosf(-spotLight[a]->rotationX*(MATH_PI/180.0f)) * cosf(-spotLight[a]->rotationY*(MATH_PI/180.0f)));
-
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".position").c_str()), spotLight[a]->x, spotLight[a]->y, spotLight[a]->z);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".direction").c_str()), spotLight[a]->direction.x, spotLight[a]->direction.y, spotLight[a]->direction.z);
-
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".constant").c_str()), spotLight[a]->constant);
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".linear").c_str()), spotLight[a]->linear);
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".quadratic").c_str()), spotLight[a]->quadratic);
-
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".cutOff").c_str()), glm::cos(glm::radians(spotLight[a]->cutOff)));
-				glUniform1f(glGetUniformLocation(materialList[i]->program, (str+".outerCutOff").c_str()), glm::cos(glm::radians(spotLight[a]->outerCutOff)));
-
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".ambient").c_str()), spotLight[a]->ambient.x, spotLight[a]->ambient.y, spotLight[a]->ambient.z);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".diffuse").c_str()), spotLight[a]->diffuse.x*spotLight[a]->intensity, spotLight[a]->diffuse.y*spotLight[a]->intensity, spotLight[a]->diffuse.z*spotLight[a]->intensity);
-				glUniform3f(glGetUniformLocation(materialList[i]->program, (str+".specular").c_str()), spotLight[a]->specular.x*spotLight[a]->intensity, spotLight[a]->specular.y*spotLight[a]->intensity, spotLight[a]->specular.z*spotLight[a]->intensity);
-
-				if(a >= maxSpotLight-1)
-					break;
-			}
-
-			glUniform3f(materialList[i]->gViewPos, mainCamera->x, mainCamera->y, mainCamera->z);
 		}
 
 		glUniformMatrix4fv(materialList[i]->gProjection, 1, GL_FALSE, glm::value_ptr(_projection));

@@ -156,7 +156,7 @@ private:
 	//Screen Resolution
 	int screenWidth, screenHeight;
 
-	void Render(glm::mat4 _projection, glm::mat4 _view);
+	void Render(glm::mat4 _projection, glm::mat4 _view, GLboolean depth = false);
 };
 
 #endif
