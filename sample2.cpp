@@ -49,9 +49,8 @@ void Start()
 	plane = new Object();
 	plane->LoadTexture("source/model/plane.jpg", BI3D_TEXTURE_DIFFUSE);
 	plane->LoadTexture("source/model/planeSpec.jpg", BI3D_TEXTURE_SPECULAR);
-	plane->LoadTexture("source/model/planeNorm.jpg", BI3D_TEXTURE_NORMAL);
 	plane->Load("source/model/plane.obj");
-	plane->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
+	plane->SetMaterialMode(BI3D_SUPPORT_LIGHT);
 	//plane->SetShininess(512.0f);
 
 	plane->scaleX = 10.0f;
@@ -61,7 +60,7 @@ void Start()
 
 	model = new Object();
 	model->Load("source/model/nanosuit/nanosuit.obj");
-	model->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
+	model->SetMaterialMode(BI3D_SUPPORT_LIGHT);
 
 	model->x = -3.0f;
 	model->rotationY = 180.0f;
@@ -75,9 +74,8 @@ void Start()
 	model2 = new Object();
 	model2->LoadTexture("source/model/res/Imrod_Diffuse.png", BI3D_TEXTURE_DIFFUSE);
 	model2->LoadTexture("source/model/res/Imrod_spec.png", BI3D_TEXTURE_SPECULAR);
-	model2->LoadTexture("source/model/res/Imrod_norm.png", BI3D_TEXTURE_NORMAL);
 	model2->Load("source/model/res/ImrodLowPoly.obj");
-	model2->SetMaterialMode(BI3D_SUPPORT_LIGHT_AND_NORMALMAP);
+	model2->SetMaterialMode(BI3D_SUPPORT_LIGHT);
 
 	model2->x = 3.0f;
 	model2->rotationY = 180.0f;
